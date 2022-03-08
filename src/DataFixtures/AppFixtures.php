@@ -53,7 +53,7 @@ class AppFixtures extends Fixture
             $participant = new Participant();
             $participant->setLastname($this->generator->lastName);
             $participant->setFirstname($this->generator->firstName);
-            $participant->setTel($this->generator->phoneNumber);
+            //$participant->setTel($this->generator->phoneNumber); //problème sur la taille des numéros à l'insertion
             $participant->setEmail($this->generator->email);
             $participant->setPassword($this->generator->password);
             $participant->setAdministrator(false);
@@ -111,7 +111,7 @@ class AppFixtures extends Fixture
         $towns = $this->manager->getRepository(Town::class)->findAll();
         $placeNames = Array("Bar", "Plage", "Forêt", "Cinéma", "Centre Sportif", "Port", "Bibliothèque");
 
-        for ($i = 0; $i < 10; $i++){
+        for ($i = 0; $i < 100; $i++){
 
 
             $venue = new Venue();
@@ -158,6 +158,9 @@ class AppFixtures extends Fixture
             $event->setVenue($this->generator->randomElement($venues));
 
             $event->setOrganizer($this->generator->randomElement($participants));
+
+
+
 
 
 
