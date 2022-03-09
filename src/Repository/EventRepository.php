@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Form\SearchEventType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -45,22 +46,24 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Event[] Returns an array of Event objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return Event[] Returns an array of Event objects
+      */
+
+
+    public function findAllQueryBuilder(SearchEventType $search) : array
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
+
+         $qb = $this->createQueryBuilder('e')
+
+            ->where('c.getCampus().getId = :val')
+            ->setParameter('val', $search)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+
+        return $qb;
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?Event
