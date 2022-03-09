@@ -1,15 +1,11 @@
 <?php
 
 namespace App\Entity;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
+
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
-
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)

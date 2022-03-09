@@ -2,7 +2,7 @@
 
 namespace App\Form\Model;
 
-class EventModel
+class EventFilterModel
 {
     public $campus;
     public $name;

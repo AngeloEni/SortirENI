@@ -50,19 +50,21 @@ class EventRepository extends ServiceEntityRepository
       * @return Event[] Returns an array of Event objects
       */
 
-
+/*
     public function findAllQueryBuilder(SearchEventType $search) : array
     {
 
          $qb = $this->createQueryBuilder('e')
 
-            ->where('c.getCampus().getId = :val')
+            ->where('e.campus= :campus)
+             ->andWhere('e.name LIKE :phrase
             ->setParameter('val', $search)
             ->getQuery()
             ->getResult();
 
         return $qb;
-    }
+
+    }*/
 
 
     /*
