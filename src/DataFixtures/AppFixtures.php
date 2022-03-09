@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Campus;
 use App\Entity\Event;
-use App\Entity\Participant;
+use App\Entity\Participant2;
 use App\Entity\Status;
 use App\Entity\Town;
 use App\Entity\Venue;
@@ -50,7 +50,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 100; $i++){
 
 
-            $participant = new Participant();
+            $participant = new Participant2();
             $participant->setLastname($this->generator->lastName);
             $participant->setFirstname($this->generator->firstName);
             //$participant->setTel($this->generator->phoneNumber); //problème sur la taille des numéros à l'insertion
@@ -130,7 +130,7 @@ class AppFixtures extends Fixture
         $campus = $this->manager->getRepository(Campus::class)->findAll();
         $status = $this->manager->getRepository(Status::class)->findAll();
         $venues = $this->manager->getRepository(Venue::class)->findAll();
-        $participants = $this->manager->getRepository(Participant::class)->findAll();
+        $participants = $this->manager->getRepository(Participant2::class)->findAll();
 
 
 
