@@ -170,7 +170,7 @@ class Event
     }
 
     /**
-     * @return Collection<int, Participant2>
+     * @return Collection<int, Participant>
      */
     public function getParticipants(): Collection
     {
