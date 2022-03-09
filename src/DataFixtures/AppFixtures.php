@@ -13,18 +13,22 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
 
     private Generator $generator;
     private ObjectManager $manager;
+    private UserPasswordHasherInterface $hasher;
 
 
-    public function __construct() {  
+    public function __construct(UserPasswordHasherInterface $passwordHasher) {
         $this->generator = Factory::create('fr_FR');
+        $this->hasher = $passwordHasher;
 
     }
+
 
     public function load(ObjectManager $manager): void
     {
@@ -32,10 +36,10 @@ class AppFixtures extends Fixture
         // $manager->persist($product);
         //d:f:l
     $this->manager = $manager;
-        $this->generateStatus();
-        $this->generateCampus();
+       $this->generateStatus();
+       $this->generateCampus();
        $this->generateTown();
-        $this->generateVenue();
+       $this->generateVenue();
        $this->generateParticipant();
        $this->generateEvent();
 
@@ -47,7 +51,7 @@ class AppFixtures extends Fixture
 
         $campus = $this->manager->getRepository(Campus::class)->findAll();
 
-        for ($i = 0; $i < 100; $i++){
+        for ($i = 0; $i < 10; $i++){
 
 
             $participant = new Participant();
@@ -55,11 +59,10 @@ class AppFixtures extends Fixture
             $participant->setFirstname($this->generator->firstName);
             //$participant->setTel($this->generator->phoneNumber); //problème sur la taille des numéros à l'insertion
             $participant->setEmail($this->generator->email);
-            $participant->setPassword($this->generator->password);
-            $participant->setAdministrator(false);
+            $participant->setPassword($this->hasher->hashPassword($participant, '123456'));
             $participant->setActive(true);
             $participant->setCampus($this->generator->randomElement($campus));
-
+            $participant->setRoles(["ROLE_USER"]);
             $this->manager->persist($participant);
         }
         $this->manager->flush();
@@ -141,30 +144,15 @@ class AppFixtures extends Fixture
             $event->setName($this->generator->colorName);
             $event->setDateTimeStart($this->generator->dateTimeBetween('-1 year', '+1 year', 'Europe/Amsterdam'));
             $event->setDuration(60);
-
-
-
             $date = clone $event->getDateTimeStart();
-
             $date->modify("-1 week");
             $event->setRegistrationClosingDate($date);
-
-
             $event->setMaxParticipants(20);
-
             $event->setEventInfo("Bonjour");
             $event->setCampus($this->generator->randomElement($campus));
             $event->setStatus($this->generator->randomElement($status));
             $event->setVenue($this->generator->randomElement($venues));
-
             $event->setOrganizer($this->generator->randomElement($participants));
-
-
-
-
-
-
-
             $event->addParticipant($this->generator->randomElement($participants));
             $event->addParticipant($event->getOrganizer());
 
