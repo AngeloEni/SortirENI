@@ -19,6 +19,7 @@ class Participant
      */
     private $id;
 
+
     /**
      * @ORM\Column(type="string", length=50)
      */
@@ -70,6 +71,11 @@ class Participant
      */
     private $myOrganizedEvent;
 
+    /**
+     * @ORM\Column(type="string", length=60, nullable=true)
+     */
+    private $pseudo;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -82,6 +88,7 @@ class Participant
     {
         return $this->id;
     }
+
 
     public function getLastname(): ?string
     {
@@ -229,6 +236,18 @@ class Participant
                 $myOrganizedEvent->setOrganizer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(?string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
 
         return $this;
     }
