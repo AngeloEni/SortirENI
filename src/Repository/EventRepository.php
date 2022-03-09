@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Form\Model\EventFilterModel;
 use App\Form\SearchEventType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -50,21 +51,21 @@ class EventRepository extends ServiceEntityRepository
       * @return Event[] Returns an array of Event objects
       */
 
-/*
-    public function findAllQueryBuilder(SearchEventType $search) : array
+
+    public function findByFilters( EventFilterModel  $filter) : array
     {
 
          $qb = $this->createQueryBuilder('e')
 
-            ->where('e.campus= :campus)
-             ->andWhere('e.name LIKE :phrase
-            ->setParameter('val', $search)
+            //
+            ->where('e.name LIKE :name')
+            ->setParameter('name', $filter->getName())
             ->getQuery()
             ->getResult();
 
         return $qb;
 
-    }*/
+    }
 
 
     /*
