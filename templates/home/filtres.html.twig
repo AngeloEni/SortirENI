@@ -1,25 +1,36 @@
 {% extends 'base.html.twig' %}
   {% block body %}
-      <div class="container-fluid">
-      <div class="row">
-      <div class="col-md-6">
-          <h2 class="mb-5">Filtre les sortie</h2>
-          {# form #}
-          {{ form_start (form)}}
-
-          {{ form_widget (form)}}
-      </div>
-      <div class="col-md-4">
-
-          <div class="m-3">
-
+      <div class="container-fluid m-3">
+          <div class="row">
+              <div class="col-md-10"></div>
               <div class="col-md-2">
-                  <button class="btn btn-primary btn-lg mt-5" type="submit">
-                      Search</button>
+                  <p>DATE DU JOUR</p>
+                  <p>Personne connectée</p>
+
               </div>
           </div>
       </div>
-      {{ form_end (form)}}
+      <div class="form">
+          <div class="container-fluid">
+              <div class="row">
+                  <div class="col-md-6">
+                      {# form #}
+                      {{ form_start (form)}}
+
+                      {{ form_widget (form)}}
+
+                      {#  <div class="col-md-2">
+            <a href="{{ path('findBy')}}" class="btn btn-primary btn-lg mt-5">
+               Rechercher</a>
+        </div>#}
+                      {{ form_end (form)}}
+
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
       <div class="container-fluid">
           <div class="row">
               <div class="col-xs-12 ">
@@ -41,12 +52,12 @@
                           <tr>
                               {% for e in events %}
                               <td>{{ e.name }}</td>
-                              <td>{{ e.dateTimeStart| date('d-m-Y') }}</td>
-                              <td>{{ e.registrationClosingDate| date('d-m-Y') }}</td>
+                              <td>{{ e.dateTimeStart| date('d-m-Y')}}</td>
+                              <td>{{ e.registrationClosingDate| date('d-m-Y')}}</td>
                               <td>{{ e.maxParticipants }}</td>
-                              <td>{{ e.Status.description }}</td>
+                              <td>{{ e.Status.description}}</td>
                               <td>X</td>
-                              <td>{{ e.getOrganizer().getFirstname() }}</td>
+                              <td>{{ e.getOrganizer().getFirstname()}}</td>
                               <td>Actions</td>
                           </tr>
                           {% endfor %}
