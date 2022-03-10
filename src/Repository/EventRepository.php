@@ -81,7 +81,8 @@ class EventRepository extends ServiceEntityRepository
 
         }
         if (!is_null($filter->getPastEvents())) {
-            $qb->andWhere('e.status = 5');
+            $qb->andWhere('e.status = :status')
+            ->setParameter('status', 6 );
 
         }
 
