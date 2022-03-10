@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"pseudo"}, message="pseudo déjà pris")
  */
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -77,7 +77,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private $myOrganizedEvent;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true, unique=true)
      */
     private $pseudo;
 

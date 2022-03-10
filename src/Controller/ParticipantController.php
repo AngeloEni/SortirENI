@@ -18,23 +18,23 @@ class ParticipantController extends AbstractController
      */
     public function index(ParticipantRepository $pRepo, \Symfony\Component\HttpFoundation\Request $req, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
     {
-
-        $participant = $pRepo->find(1);
-
-
-
-        $yes = new Participant();
+        //mock test
+        //$participant = $pRepo->find(1);
 
 
+        $participant = $this->getUser();
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($req);
 
         if($form->isSubmitted()){
 
-
-                $mdp = $form->get('password')->getData();
-                $hashedPassword = $hasher->hashPassword($participant, $mdp);
-                 $participant->setPassword($hashedPassword);
+                //controle si le mdp est changer
+                if($form->get('password')->getData() != null){
+                //récupération du mdp -> hashage -> set à l'objt participant
+                    $mdp = $form->get('password')->getData();
+                    $hashedPassword = $hasher->hashPassword($participant, $mdp);
+                     $participant->setPassword($hashedPassword);
+                }
 
 
             $em->persist($participant);
