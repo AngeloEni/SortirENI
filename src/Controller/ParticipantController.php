@@ -14,6 +14,10 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
+/**
+ * @Route("/internal")
+ */
+
 class ParticipantController extends AbstractController
 {
     /**

@@ -46,19 +46,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Acceuil</a>
+                        <a class="nav-link active" aria-current="page" href="{{ path('home')}}">Acceuil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Villes</a>
+                        <a class="nav-link" href="{{ path('app_participant')}}">Mon profil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Campus</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Mon profil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Se déconnecter</a>
+                        <a class="nav-link" href="{{ path('app_logout')}}">Se déconnecter</a>
                     </li>
 
                 </ul>
