@@ -48,6 +48,8 @@
                               <td>{{ e.Status.description }}</td>
                               {% if user in e.participants %}
                                   <td>Inscrit</td>
+                              {% else %}
+                              <td></td>
                               {% endif %}
                               <td>{{ e.getOrganizer().getFirstname() }}</td>
                               <td>Actions</td>
