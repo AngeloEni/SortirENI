@@ -80,6 +80,11 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('latestDate', $filter->getLatestDate());
 
         }
+        if (!is_null($filter->getPastEvents())) {
+            $qb->andWhere('e.status = :past')
+                ->setParameter('past', "Ended");
+
+        }
         return $qb->getQuery()->getResult();
 
     }

@@ -15,10 +15,10 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-
-    public function showAll(Request $req, EventRepository $repo): Response
+//je crée le formulaire dès le chargement de la page
+    public function showAll(Request $req, EventRepository $eventRepo): Response
     {
-        $events = $repo->findAll();
+        $events = $eventRepo->findAll();
         $form = $this->createForm(SearchEventType::class);
         $form->handleRequest($req);
 
@@ -26,7 +26,7 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $eventFilterModel = $form->getData();
 
-            $events = $repo->findByFilters( $eventFilterModel);
+            $events = $eventRepo->findByFilters( $eventFilterModel);
 
 
         }
