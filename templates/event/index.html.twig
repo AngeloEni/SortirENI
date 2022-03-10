@@ -22,28 +22,35 @@
                 <p>Longitude :</p><p></p>
             </div>
         </div>
-        <div class="row"></div>
+        <div class="row">
+
+            <div class="col-md-offset-2 col-md-3">
+
+
+                    <table class="table table-dark table-striped table-hover table-borderless">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Pseudo</th>
+                            <th>Nom  </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for participant in participants %}
+                        <tr>
+                                <td>{{ participant.pseudo }}</td>
+                                <td>{{ participant.firstname }} {{ participant.lastname }}</td>
+                        </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+            </div>
+
+
+
+        </div>
     </div>
 
-    <table class="table table-dark table-striped table-hover table-borderless">
-        <thead class="table-dark">
-        <tr>
-            <th>Pseudo</th>
-            <th>Nom  </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>mark@otto.red</td>
-            <td>+1-202-555-0154</td>
-            <td>28</td>
-            <td>US</td>
-        </tr>
-        </tbody>
-    </table>
 
 
 {% endblock %}
