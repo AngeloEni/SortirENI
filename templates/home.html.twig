@@ -5,9 +5,9 @@
       <div class="col-md-6">
           <h2 class="mb-5">Filtrer les sorties</h2>
           {# form #}
-          {{ form_start (form)}}
+          {{ form_start (form) }}
 
-          {{ form_widget (form)}}
+          {{ form_widget (form) }}
       </div>
       <div class="col-md-4">
 
@@ -15,11 +15,12 @@
 
               <div class="col-md-2">
                   <button class="btn btn-primary btn-lg mt-5" type="submit">
-                      Search</button>
+                      Search
+                  </button>
               </div>
           </div>
       </div>
-      {{ form_end (form)}}
+      {{ form_end (form) }}
       <div class="container-fluid">
           <div class="row">
               <div class="col-xs-12 ">
@@ -27,13 +28,13 @@
                       <table class="table table-striped table-hover ">
                           <thead>
                           <tr>
-                              <th scope="col">Event name</th>
-                              <th scope="col">Event date</th>
-                              <th scope="col">Registration closing date</th>
-                              <th scope="col">Registered/places</th>
-                              <th scope="col">Status</th>
-                              <th scope="col">Registered</th>
-                              <th scope="col">Organiser</th>
+                              <th scope="col">Nom de la sortie</th>
+                              <th scope="col">Date de la sortie</th>
+                              <th scope="col">Clôture</th>
+                              <th scope="col">Inscrits/places</th>
+                              <th scope="col">Etat</th>
+                              <th scope="col">Instrit(e)</th>
+                              <th scope="col">Organisateur</th>
                               <th scope="col">Actions</th>
                           </tr>
                           </thead>
@@ -45,7 +46,9 @@
                               <td>{{ e.registrationClosingDate| date('d-m-Y') }}</td>
                               <td>{{ e.maxParticipants }}</td>
                               <td>{{ e.Status.description }}</td>
-                              <td>X</td>
+                              {% if user in e.participants %}
+                                  <td>Inscrit</td>
+                              {% endif %}
                               <td>{{ e.getOrganizer().getFirstname() }}</td>
                               <td>Actions</td>
                           </tr>

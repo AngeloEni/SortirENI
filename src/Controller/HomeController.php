@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Participant;
+use App\Form\AddEventType;
 use App\Form\SearchEventType;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
@@ -25,7 +27,6 @@ class HomeController extends AbstractController
 //je crée le formulaire dès le chargement de la page
     public function showAll(Request $req, EventRepository $eventRepo): Response
     {
-        $participant = new Participant();
         $events = $eventRepo->findAll();
         $form = $this->createForm(SearchEventType::class);
         $form->handleRequest($req);
@@ -37,51 +38,44 @@ class HomeController extends AbstractController
 
             $events = $eventRepo->findByFilters( $eventFilterModel, $user);
 
-
         }
 
 
         return $this->render('/home.html.twig', [
             'events' => $events,
             'form' => $form->createView(),
+            'user'=>$user,
         ]);
     }
 
 
+    /**
+     * @Route("/addEvent", name="addEvent")
+     */
 
+    public function addEvent(Request $req, EntityManagerInterface $em): Response
+    {
+        $event = new Event(); // je crée une sortie
+        // creation du form avec asso. avec $event
 
-
-    /*
-        public function findBy(Request $req, EventRepository $repo, EntityManagerInterface  $em): Response
+        $form =  $this->createForm(AddEventType::class,$event);
+        $form->handleRequest($req);
+        if ($form->isSubmitted() && $form->isValid())
         {
-            $events = $repo->findAll();
-
-            // $em->getFilters()
-             //   ->enable('searchFilter');
-
-            $form = $this->createForm(SearchEventType::class);
-            $form->handleRequest($req);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $eventModel = $form->getData();
-
-                $event = new Event();
-                $event->setName();
-                //($eventModel->name);
-                $event->setDateTimeStart();
-                $event->setRegistrationClosingDate();
-                $event->setMaxParticipants();
-                $event->setStatus();
-                $event->setOrganizer();
-
-               // $events = $repo->findAllQueryBuilder($eventModel);
+            if ($form->get('publish')->isClicked()) {
+                $event->setStatus(1);
             }
-
-            return $this->render('/filtres.html.twig', [
-                'events' => $events,
-                'form' => $form->createView(),
+            if ($form->get('save')->isClicked()) {
+                $event->setStatus(2);
+            }
+            $em->persist($event);
+            $em->flush();
+            return $this->render('home.html.twig', [
+                'addEventForm' => $form->createView(),
             ]);
-        }*/
+        }
+    }
+
 
 
 }
