@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/internal", name="internal")
+ */
+
 class ParticipantController extends AbstractController
 {
     /**
