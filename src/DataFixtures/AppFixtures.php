@@ -56,6 +56,7 @@ class AppFixtures extends Fixture
 
             $participant = new Participant();
             $participant->setLastname($this->generator->lastName);
+            $participant->setPseudo($this->generator->company);
             $participant->setFirstname($this->generator->firstName);
             //$participant->setTel($this->generator->phoneNumber); //problème sur la taille des numéros à l'insertion
             $participant->setEmail($this->generator->email);
