@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @Route("/internal", name="internal")
+ * @Route("/internal")
  */
 
 class RegistrationController extends AbstractController

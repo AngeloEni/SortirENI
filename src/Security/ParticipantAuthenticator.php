@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Security;
-
+use App\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,9 +28,11 @@ class ParticipantAuthenticator extends AbstractLoginFormAuthenticator
         $this->urlGenerator = $urlGenerator;
     }
 
+
+
     public function authenticate(Request $request): Passport
     {
-        $email = $request->request->get('email', '');
+        $email = $request->request->get('email_or_username', '');
 
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 

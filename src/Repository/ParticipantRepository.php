@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Repository;
-
+use App\Security\ParticipantAuthenticator;
 use App\Entity\Participant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
@@ -19,7 +21,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  * @method Participant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 
-class ParticipantRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class ParticipantRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserLoaderInterface
 
 {
     public function __construct(ManagerRegistry $registry)
@@ -67,6 +69,9 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     }
 
 
+
+
+
     // /**
     //  * @return Participant[] Returns an array of Participant objects
     //  */
@@ -97,4 +102,28 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     }
     */
 
+    public function loadUserByIdentifier(string $usernameOrEmail): ?Participant
+    {
+        $entityManager = $this->getEntityManager();
+
+        return $entityManager->createQuery(
+            'SELECT u
+                FROM App\Entity\Participant u
+                WHERE u.pseudo = :query
+                OR u.email = :query'
+        )
+            ->setParameter('query', $usernameOrEmail)
+            ->getOneOrNullResult();
+    }
+
+
+    public function __call($name, $arguments)
+    {
+        // TODO: Implement @method null loadUserByIdentifier(string $identifier)
+    }
+
+    public function loadUserByUsername(string $username)
+    {
+        // TODO: Implement loadUserByUsername() method.
+    }
 }
