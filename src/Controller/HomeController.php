@@ -70,10 +70,11 @@ class HomeController extends AbstractController
             }
             $em->persist($event);
             $em->flush();
-            return $this->render('home.html.twig', [
-                'addEventForm' => $form->createView(),
-            ]);
-        }
+
+    }
+        return $this->render('home.html.twig', [
+            'addEventForm' => $form->createView(),
+        ]);
     }
 
 
