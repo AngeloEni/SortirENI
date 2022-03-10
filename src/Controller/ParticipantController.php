@@ -30,12 +30,13 @@ class ParticipantController extends AbstractController
         $form->handleRequest($req);
 
         if($form->isSubmitted()){
+
+
                 $mdp = $form->get('password')->getData();
+                $hashedPassword = $hasher->hashPassword($participant, $mdp);
+                 $participant->setPassword($hashedPassword);
 
-//            $hashedPassword = $hasher->hashPassword($participant, $mdp);
-//            $participant->setPassword($hashedPassword);
 
-            $participant->setPassword($mdp);
             $em->persist($participant);
             $em->flush();
 
