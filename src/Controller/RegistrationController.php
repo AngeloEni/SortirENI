@@ -12,6 +12,10 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @Route("/internal")
+ */
+
 class RegistrationController extends AbstractController
 {
     /**
