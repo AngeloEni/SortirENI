@@ -64,6 +64,22 @@ class EventRepository extends ServiceEntityRepository
             $qb->andWhere('e.name LIKE :name')
                 ->setParameter('name', '%'.$filter->getName().'%');
         }
+        if (!is_null($filter->getEarliestDate()) && !is_null($filter->getLatestDate())) {
+            $qb->andWhere('e.dateTimeStart BETWEEN :earliestDate AND :latestDate')
+                ->setParameter('earliestDate', $filter->getEarliestDate())
+                ->setParameter('latestDate', $filter->getLatestDate());
+
+        }
+        if (!is_null($filter->getEarliestDate()) && is_null($filter->getLatestDate())) {
+            $qb->andWhere('e.dateTimeStart > :earliestDate')
+                ->setParameter('earliestDate', $filter->getEarliestDate());
+
+        }
+        if (!is_null($filter->getLatestDate()) && is_null($filter->getEarliestDate())) {
+            $qb->andWhere('e.dateTimeStart < :latestDate')
+                ->setParameter('latestDate', $filter->getLatestDate());
+
+        }
         return $qb->getQuery()->getResult();
 
     }

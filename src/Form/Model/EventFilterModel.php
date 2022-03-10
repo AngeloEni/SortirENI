@@ -9,7 +9,8 @@ class EventFilterModel
 {
     private ?Campus $campus = null;
     private ?string $name = null;
-    private ?\DateTime $dateStart =null;
+    private ?\DateTime $earliestDate =null;
+    private ?\DateTime $latestDate =null;
     private ?bool $myOrganisedEvents=null;
     private ?bool $myEvents =null;
     private ?bool $otherEvents =null;
@@ -55,20 +56,39 @@ class EventFilterModel
     /**
      * @return \DateTime|null
      */
-    public function getDateStart(): ?\DateTime
+    public function getEarliestDate(): ?\DateTime
     {
-        return $this->dateStart;
+        return $this->earliestDate;
     }
 
     /**
-     * @param \DateTime|null $dateStart
+     * @param \DateTime|null $earliestDate
      * @return EventFilterModel
      */
-    public function setDateStart(?\DateTime $dateStart): EventFilterModel
+    public function setEarliestDate(?\DateTime $earliestDate): EventFilterModel
     {
-        $this->dateStart = $dateStart;
+        $this->earliestDate = $earliestDate;
         return $this;
     }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLatestDate(): ?\DateTime
+    {
+        return $this->latestDate;
+    }
+
+    /**
+     * @param \DateTime|null $latestDate
+     * @return EventFilterModel
+     */
+    public function setLatestDate(?\DateTime $latestDate): EventFilterModel
+    {
+        $this->latestDate = $latestDate;
+        return $this;
+    }
+
 
     /**
      * @return bool|null
