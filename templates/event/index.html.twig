@@ -32,14 +32,18 @@
                         <tr>
                             <th>Pseudo</th>
                             <th>Nom  </th>
+
                         </tr>
                         </thead>
                         <tbody>
                             {% for participant in participants %}
-                        <tr>
+
+
+                                <tr onclick="window.location='{{ path('profil', {'id': participant.id}) }}';" >
                                 <td>{{ participant.pseudo }}</td>
                                 <td>{{ participant.firstname }} {{ participant.lastname }}</td>
-                        </tr>
+                                </tr>
+
                             {% endfor %}
 
                         </tbody>
@@ -50,6 +54,7 @@
 
         </div>
     </div>
+
 
 
 
