@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
 use App\Form\SearchEventType;
 use App\Repository\EventRepository;
+use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,15 +20,17 @@ class HomeController extends AbstractController
 //je crée le formulaire dès le chargement de la page
     public function showAll(Request $req, EventRepository $eventRepo): Response
     {
+        $participant = new Participant();
         $events = $eventRepo->findAll();
         $form = $this->createForm(SearchEventType::class);
         $form->handleRequest($req);
+        $user = $this->getUser();
 
 
         if ($form->isSubmitted() && $form->isValid()) {
             $eventFilterModel = $form->getData();
 
-            $events = $eventRepo->findByFilters( $eventFilterModel);
+            $events = $eventRepo->findByFilters( $eventFilterModel, $user);
 
 
         }

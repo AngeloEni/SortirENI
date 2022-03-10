@@ -57,6 +57,7 @@ class Event
 
     /**
      * @ORM\ManyToMany(targetEntity=Participant::class, mappedBy="events")
+     *
      */
     private $participants;
 

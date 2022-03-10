@@ -51,8 +51,9 @@ class EventRepository extends ServiceEntityRepository
      */
 
 
-    public function findByFilters(EventFilterModel $filter): array
+    public function findByFilters(EventFilterModel $filter, $user): array
     {
+
 
         $qb = $this->createQueryBuilder('e');
 
@@ -80,11 +81,32 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('latestDate', $filter->getLatestDate());
 
         }
-        if (!is_null($filter->getPastEvents())) {
-            $qb->andWhere('e.status = :status')
-            ->setParameter('status', 6 );
+
+        if (($filter->getMyOrganisedEvents())) {
+            $qb->andWhere('e.organizer = :org')
+                ->setParameter('org', $user);
 
         }
+
+        if (($filter->getMyEvents())) {
+            $qb->andWhere(':user MEMBER OF e.participants' )
+                ->setParameter('user', $user );
+
+        }
+
+        if (($filter->getOtherEvents())) {
+            $qb->andWhere(':u NOT MEMBER OF e.participants')
+                ->setParameter('u', $user );
+
+        }
+
+
+        if (($filter->getPastEvents())) {
+            $qb->andWhere('e.status = :status')
+                ->setParameter('status', 5 );
+
+        }
+
 
         return $qb->getQuery()->getResult();
 

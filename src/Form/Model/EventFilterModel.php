@@ -14,7 +14,7 @@ class EventFilterModel
     private ?bool $myOrganisedEvents=null;
     private ?bool $myEvents =null;
     private ?bool $otherEvents =null;
-    private ?int $pastEvents =null;
+    private ?bool $pastEvents =null;
 
     /**
      * @return Campus|null
@@ -145,22 +145,24 @@ class EventFilterModel
     }
 
     /**
-     * @return int|null
+     * @return bool|null
      */
-    public function getPastEvents(): ?int
+    public function getPastEvents(): ?bool
     {
         return $this->pastEvents;
     }
 
     /**
-     * @param int|null $pastEvents
+     * @param bool|null $pastEvents
      * @return EventFilterModel
      */
-    public function setPastEvents(?int $pastEvents): EventFilterModel
+    public function setPastEvents(?bool $pastEvents): EventFilterModel
     {
         $this->pastEvents = $pastEvents;
         return $this;
     }
+
+
 
 
 }
