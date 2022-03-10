@@ -2,16 +2,18 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ParticipantRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-
-class Participant
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
@@ -20,6 +22,21 @@ class Participant
      */
     private $id;
 
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -36,20 +53,6 @@ class Participant
      */
     private $tel;
 
-    /**
-     * @ORM\Column(type="string", length=150)
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $administrator;
 
     /**
      * @ORM\Column(type="boolean")
@@ -72,10 +75,6 @@ class Participant
      */
     private $myOrganizedEvent;
 
-    /**
-     * @ORM\Column(type="string", length=60, nullable=true)
-     */
-    private $pseudo;
 
     public function __construct()
     {
@@ -83,13 +82,73 @@ class Participant
         $this->myOrganizedEvent = new ArrayCollection();
     }
 
-   
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+
+
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
 
     public function getLastname(): ?string
     {
@@ -127,46 +186,12 @@ class Participant
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getAdministrator(): ?bool
-    {
-        return $this->administrator;
-    }
-
-    public function setAdministrator(bool $administrator): self
-    {
-        $this->administrator = $administrator;
-
-        return $this;
-    }
 
     public function getActive(): ?bool
     {
         return $this->active;
     }
+
 
     public function setActive(bool $active): self
     {
@@ -241,18 +266,27 @@ class Participant
         return $this;
     }
 
-    public function getPseudo(): ?string
+
+
+
+
+    /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
     {
-        return $this->pseudo;
+        return null;
     }
 
-    public function setPseudo(?string $pseudo): self
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
     {
-        $this->pseudo = $pseudo;
-
-        return $this;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
-
-   
-    
 }
