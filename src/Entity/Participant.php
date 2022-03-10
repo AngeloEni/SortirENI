@@ -75,6 +75,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $myOrganizedEvent;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $pseudo;
+
 
     public function __construct()
     {
@@ -288,5 +293,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(?string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
     }
 }
