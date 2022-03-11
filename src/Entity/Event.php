@@ -84,7 +84,10 @@ class Event
         $this->participants = new ArrayCollection();
     }
 
-
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getName(): ?string
     {
