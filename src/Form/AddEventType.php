@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Event;
-use Doctrine\DBAL\Types\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -30,10 +30,10 @@ class AddEventType extends AbstractType
                 'format' => 'yyyy-MM-dd',
             ])
             ->add('maxParticipants')
-            ->add('duration', NumberType::class, [
-                'min' => 1,
-                'max' => 1000,
-            ])
+//            ->add('duration', NumberType::class, [
+//                'min' => 1,
+//                'max' => 1000,
+//            ])
             ->add('eventInfo', TextareaType::class,)
             ->add('venue', TextType::class)
 

@@ -88,6 +88,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
+    private string $fullname;
 
 
     public function __construct()
@@ -186,6 +187,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         $this->firstname = $firstname;
 
         return $this;
+    }
+
+    public function getFullname(): ?string
+    {
+        return $this->firstname.' '.$this->lastname;
     }
 
     public function getTel(): ?string

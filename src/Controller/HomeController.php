@@ -25,12 +25,27 @@ class HomeController extends AbstractController
      * @Route("/", name="home")
      */
 //je crée le formulaire dès le chargement de la page
-    public function showAll(Request $req, EventRepository $eventRepo): Response
+    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo): Response
     {
+        $now = new \DateTime();
+        $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
+
+        $user = $this->getUser();
+        $participant = new Participant();
+        $participants = $partiRepo->findAll();
+
+        foreach ($participants as $p) {
+            if ($p->getEmail() == $user->getUserIdentifier()) {
+                $participant = $p;
+            }
+        }
+
+
         $events = $eventRepo->findAll();
         $form = $this->createForm(SearchEventType::class);
         $form->handleRequest($req);
-        $user = $this->getUser();
+
+
 
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -45,6 +60,8 @@ class HomeController extends AbstractController
             'events' => $events,
             'form' => $form->createView(),
             'user'=>$user,
+            'now'=>$now,
+            'participant'=>$participant,
         ]);
     }
 
@@ -70,9 +87,10 @@ class HomeController extends AbstractController
             }
             $em->persist($event);
             $em->flush();
+            return $this->redirectToRoute('home.html.twig');
 
     }
-        return $this->render('home.html.twig', [
+        return $this->render('add.html.twig', [
             'addEventForm' => $form->createView(),
         ]);
     }
