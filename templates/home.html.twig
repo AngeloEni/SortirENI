@@ -67,11 +67,11 @@
                                     e.Status.description == "Open" or
                                     e.Status.description == "Cancelled" or
                                     e.Status.description == "Ended" %}
-                              <td><a class="nav-link" href="#">Afficher</a></td>
+                              <td><a class="nav-link" href="{{ path('app_event', {id:e.id}) }}">Afficher</a></td>
                                     {% if user in e.participants and (e.Status != "Ongoing" or e.Status != "Ended") %}
                                         <td><a class="nav-link" href="#"> Se desister</a></td>
                                     {% elseif e.Status.description == "Open" and user in e.participants == false and e.getOrganizer() != user %}
-                                        <td><a class="nav-link" href="#"> S'inscrire</a></td>
+                                        <td><a class="nav-link" href="{{ path('register_for_revent', {id:e.id}) }}"> S'inscrire</a></td>
                                     {% endif %}
 
                               {% endif %}

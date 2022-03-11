@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManager;
@@ -10,6 +11,9 @@ use PhpParser\Node\Expr\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+    /**
+     * @Route("/internal")
+     */
 
 class EventController extends AbstractController
 {
@@ -34,5 +38,27 @@ class EventController extends AbstractController
             'event' => $event,
             'participants' => $arrayParticipant
         ]);
+    }
+
+    /**
+     * @Route("/RegisterForEvent/{id}", name="register_for_revent")
+     */
+    public function registerForEvent(Event $e, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $partincipantsTab = $e->getParticipants();
+
+
+        if ($e->getStatus()->getDescription() == "Open"
+            and $partincipantsTab->contains($user) == false
+            and count($e->getParticipants()) < $e->getMaxParticipants())
+        {
+
+            $e->addParticipant($user);
+            $em->flush();
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->redirectToRoute('home');
     }
 }
