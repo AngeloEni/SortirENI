@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\Participant;
+use App\Entity\Status;
 use App\Form\AddEventType;
 use App\Form\SearchEventType;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
+use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,10 +27,19 @@ class HomeController extends AbstractController
      * @Route("/", name="home")
      */
 //je crée le formulaire dès le chargement de la page
-    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo): Response
+    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo, EntityManagerInterface $em , StatusRepository  $statusRepository): Response
     {
+        $this->updateStatus($eventRepo,$em,$statusRepository);
+
+
         $now = new \DateTime();
         $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
+
+        //--------------Controlle de la BDD et des evenement à archiver---------------------------------------
+
+        if ($now)
+
+        //----------------------------------------------------------------------------------------------------
 
         $user = $this->getUser();
         $participant = new Participant();
@@ -95,6 +106,37 @@ class HomeController extends AbstractController
         ]);
     }
 
+
+    public function updateStatus (EventRepository $eventRepository, EntityManagerInterface $em , StatusRepository  $statusRepository) {
+        // Récupérer la table des events et date du jour
+
+        $allEvent = $eventRepository->findAll();
+        $dateTimeNow = new \DateTime();
+        $eventToOld = Array ();
+        $satut = $statusRepository->findBy(array('description' => "Archived"));
+
+    //rajouter en base de donnée le cas ARchived
+        //itérer dans la table pour tester la date
+
+        foreach ($allEvent as $event){
+            $dateEvent = $event->getDateTimeStart();
+            $interval = $dateEvent->diff($dateTimeNow);
+                if ($interval->days > 31 and $dateEvent<$dateTimeNow){
+                    //réaliser un tableau des des évenements à update
+                    array_push($eventToOld, $event);
+                }
+
+        }
+        //itérer dans le tableau pour update le status des event passé
+
+        foreach ($eventToOld as $oldEvent){
+
+            $oldEvent->setStatus($satut[0]);
+            $em->persist($oldEvent);
+        }
+            $em->flush();
+
+    }
 
 
 }
