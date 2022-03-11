@@ -106,8 +106,9 @@ class HomeController extends AbstractController
 
         $allEvent = $eventRepository->findAll();
         $dateTimeNow = new \DateTime();
-        $eventToOld = Array ();
-        $satut = $statusRepository->findBy(array('description' => "Archived"));
+
+        $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
+        $statusEnded =$statusRepository->findBy(array('description' => "Ended"));
 
     //rajouter en base de donnée le cas ARchived
         //itérer dans la table pour tester la date
@@ -115,19 +116,25 @@ class HomeController extends AbstractController
         foreach ($allEvent as $event){
             $dateEvent = $event->getDateTimeStart();
             $interval = $dateEvent->diff($dateTimeNow);
-                if ($interval->days > 31 and $dateEvent<$dateTimeNow){
+
+                // évenement en cours
+                if ($dateEvent>$dateTimeNow){
+                    $event->setStatus($statusEnded[0]);
+                    $em->persist($event);
+                }
+                if ($interval->days > 31 and $dateEvent>$dateTimeNow){
                     //réaliser un tableau des des évenements à update
-                    array_push($eventToOld, $event);
+                    $event->setStatus($statusArchived[0]);
+                    $em->persist($event);
                 }
 
-        }
-        //itérer dans le tableau pour update le status des event passé
 
-        foreach ($eventToOld as $oldEvent){
 
-            $oldEvent->setStatus($satut[0]);
-            $em->persist($oldEvent);
+
         }
+
+
+
             $em->flush();
 
     }
