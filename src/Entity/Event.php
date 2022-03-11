@@ -79,10 +79,30 @@ class Event
      */
     private $campus;
 
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     * @return Event
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
 
 
 
@@ -238,6 +258,7 @@ class Event
 
         return $this;
     }
+
 
     
 }

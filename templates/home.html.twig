@@ -61,7 +61,9 @@
                               <td></td>
                               {% endif %}
                               <td>{{ e.getOrganizer().getFirstname() }}</td>
-                              <td>Actions</td>
+                              <td>Actions
+                                  <a href="{{ path('eventEdit',{'id':e.id})}}" class="btn btn-secondary">
+                                  </a></td>
                           </tr>
                           {% endfor %}
                           </tbody>

@@ -45,32 +45,30 @@ class VenueRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Venue[] Returns an array of Venue objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+//     /**
+//      * @return Venue[] Returns an array of Venue objects
+//      */
+//
+//    public function findByVenue($value): array
+//    {
+//        return $this->createQueryBuilder('v')
+//            ->andWhere('v.name = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-    /*
-    public function findOneBySomeField($value): ?Venue
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+
+
+//    public function findStreetByVenueName($value): ?Venue
+//    {
+//        return $this->createQueryBuilder('v')
+//            ->andWhere('v.name = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
+
 }
