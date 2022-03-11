@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ParticipantController!{% endblock %}
+
+{% block body %}
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-3">
+
+    <h1>{{ profil.pseudo }}</h1>
+    <p>Prénom :</p><p>{{ profil.firstname }}</p>
+    <p>Nom : </p>
+    <p>{{ profil.lastname }}</p>
+    <p>Téléphone : </p>
+    <p>{{ profil.tel }}</p>
+    <p>Email : </p>
+    <p>{{ profil.email }}</p>
+    <p>campus : </p>
+    <p>{{ profil.campus.name }}</p>
+                <a href="{{ path('home') }}"><button type="button" class="btn btn-primary">home</button></a>
+            </div>
+            <div class="col-md-2">
+
+    <img class="logo" src="{{ asset('uploads/')}}{{profil.image}}" >
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

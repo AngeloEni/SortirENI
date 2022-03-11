@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\Participant;
 use App\Form\Model\EventFilterModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -111,6 +112,8 @@ class EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
 
     }
+
+
 
 
     /*

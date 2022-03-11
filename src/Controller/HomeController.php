@@ -11,6 +11,8 @@ use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\StatusRepository;
 use App\Repository\VenueRepository;
+
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,8 +31,11 @@ class HomeController extends AbstractController
      */
 
 //je crée le formulaire dès le chargement de la page
-    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo): Response
+    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo, EntityManagerInterface $em , StatusRepository  $statusRepository): Response
     {
+        $this->updateStatus($eventRepo,$em,$statusRepository);
+
+
         $now = new \DateTime();
         $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
 
@@ -129,6 +134,44 @@ class HomeController extends AbstractController
         }
     }
 
+
+    public function updateStatus (EventRepository $eventRepository, EntityManagerInterface $em , StatusRepository  $statusRepository) {
+        // Récupérer la table des events et date du jour
+
+        $allEvent = $eventRepository->findAll();
+        $dateTimeNow = new \DateTime();
+
+        $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
+        $statusEnded =$statusRepository->findBy(array('description' => "Ended"));
+
+    //rajouter en base de donnée le cas ARchived
+        //itérer dans la table pour tester la date
+
+        foreach ($allEvent as $event){
+            $dateEvent = $event->getDateTimeStart();
+            $interval = $dateEvent->diff($dateTimeNow);
+
+                // évenement en cours
+                if ($dateEvent>$dateTimeNow){
+                    $event->setStatus($statusEnded[0]);
+                    $em->persist($event);
+                }
+                if ($interval->days > 31 and $dateEvent>$dateTimeNow){
+                    //réaliser un tableau des des évenements à update
+                    $event->setStatus($statusArchived[0]);
+                    $em->persist($event);
+                }
+
+
+
+
+        }
+
+
+
+            $em->flush();
+
+    }
 
 
 

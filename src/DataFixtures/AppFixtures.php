@@ -143,7 +143,7 @@ class AppFixtures extends Fixture
 
             $event = new Event();
             $event->setName($this->generator->colorName);
-            $event->setDateTimeStart($this->generator->dateTimeBetween('-1 year', '+1 year', 'Europe/Amsterdam'));
+            $event->setDateTimeStart($this->generator->dateTimeBetween('-1 month', '+1 month', 'Europe/Amsterdam'));
             $event->setDuration(60);
             $date = clone $event->getDateTimeStart();
             $date->modify("-1 week");

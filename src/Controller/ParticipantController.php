@@ -17,7 +17,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 /**
  * @Route("/internal")
  */
-
 class ParticipantController extends AbstractController
 {
     /**
@@ -31,15 +30,15 @@ class ParticipantController extends AbstractController
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($req);
 
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
 
-                //controle si le mdp est changer
-                if($form->get('password')->getData() != null){
+            //controle si le mdp est changer
+            if ($form->get('password')->getData() != null) {
                 //récupération du mdp -> hashage -> set à l'objt participant
-                    $mdp = $form->get('password')->getData();
-                    $hashedPassword = $hasher->hashPassword($participant, $mdp);
-                     $participant->setPassword($hashedPassword);
-                }
+                $mdp = $form->get('password')->getData();
+                $hashedPassword = $hasher->hashPassword($participant, $mdp);
+                $participant->setPassword($hashedPassword);
+            }
 
             $brochureFile = $form->get('brochure')->getData();
 
@@ -48,10 +47,10 @@ class ParticipantController extends AbstractController
                 $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$brochureFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $brochureFile->guessExtension();
 
                 //méthode pour supprimer l'ancienne image du participant
-                $this->deleteImage($participant->getImage(),$em);
+                $this->deleteImage($participant->getImage(), $em);
 
                 // Move the file to the directory where brochures are stored
                 try {
@@ -93,9 +92,22 @@ class ParticipantController extends AbstractController
         $fileSystem = new Filesystem();
         //Je supprime l'image du dossier
         $projectDir = $this->getParameter('kernel.project_dir');
-        $fileSystem->remove($projectDir.'/public/uploads/'.$filename);
+        $fileSystem->remove($projectDir . '/public/uploads/' . $filename);
 
         return new Response('deleted', Response::HTTP_OK);
 
+    }
+
+    /**
+     * @Route("/profil/{id}", name="profil")
+     */
+    public function profil(int $id, ParticipantRepository $partiRepo): Response
+    {
+
+        $profil = $partiRepo->find($id);
+
+        return $this->render('participant/profil.html.twig', [
+            'profil' => $profil
+        ]);
     }
 }
