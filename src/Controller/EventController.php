@@ -56,9 +56,28 @@ class EventController extends AbstractController
 
             $e->addParticipant($user);
             $em->flush();
-            return $this->redirectToRoute('home');
         }
 
         return $this->redirectToRoute('home');
     }
+
+    /**
+     * @Route("/unregisterForEvent/{id}", name="unregister_for_revent")
+     */
+    public function unregisterForEvent(Event $e, EntityManagerInterface $em): Response
+    {
+        if ($e->getStatus()->getDescription() == "Open")
+        {
+            $user = $this->getUser();
+
+            $e->removeParticipant($user);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('home');
+
+    }
+
+
+
 }
