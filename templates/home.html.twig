@@ -44,7 +44,7 @@
                               <td>{{ e.name }}</td>
                               <td>{{ e.dateTimeStart| date('d-m-Y') }}</td>
                               <td>{{ e.registrationClosingDate| date('d-m-Y') }}</td>
-                              <td>{{ e.maxParticipants }}</td>
+                              <td>{{ e.Participants|length }}/{{ e.maxParticipants }}</td>
                               <td>{{ e.Status.description }}</td>
                               {% if user in e.participants %}
                                   <td>Inscrit</td>
