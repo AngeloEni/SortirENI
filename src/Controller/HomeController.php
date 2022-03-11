@@ -35,12 +35,6 @@ class HomeController extends AbstractController
         $now = new \DateTime();
         $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
 
-        //--------------Controlle de la BDD et des evenement à archiver---------------------------------------
-
-        if ($now)
-
-        //----------------------------------------------------------------------------------------------------
-
         $user = $this->getUser();
         $participant = new Participant();
         $participants = $partiRepo->findAll();
