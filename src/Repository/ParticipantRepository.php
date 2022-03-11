@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repository;
+use App\Entity\Event;
 use App\Security\ParticipantAuthenticator;
 use App\Entity\Participant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -126,4 +127,6 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     {
         // TODO: Implement loadUserByUsername() method.
     }
+
+
 }
