@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManager;
@@ -15,9 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
      * @Route("/internal")
      */
 
+
 class EventController extends AbstractController
 {
     /**
+
      * @Route("/event/{id}", name="app_event")
      */
     public function index(int $id, EventRepository $eventRepository, EntityManagerInterface $em, ParticipantRepository $pr): Response
@@ -77,7 +80,5 @@ class EventController extends AbstractController
         return $this->redirectToRoute('home');
 
     }
-
-
 
 }

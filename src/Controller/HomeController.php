@@ -10,6 +10,9 @@ use App\Form\SearchEventType;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\StatusRepository;
+use App\Repository\VenueRepository;
+
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +29,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
+
 //je crée le formulaire dès le chargement de la page
     public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo, EntityManagerInterface $em , StatusRepository  $statusRepository): Response
     {
@@ -51,12 +55,10 @@ class HomeController extends AbstractController
         $form->handleRequest($req);
 
 
-
-
         if ($form->isSubmitted() && $form->isValid()) {
             $eventFilterModel = $form->getData();
 
-            $events = $eventRepo->findByFilters( $eventFilterModel, $user);
+            $events = $eventRepo->findByFilters($eventFilterModel, $user);
 
         }
 
@@ -64,9 +66,9 @@ class HomeController extends AbstractController
         return $this->render('/home.html.twig', [
             'events' => $events,
             'form' => $form->createView(),
-            'user'=>$user,
-            'now'=>$now,
-            'participant'=>$participant,
+            'user' => $user,
+            'now' => $now,
+            'participant' => $participant,
         ]);
     }
 
@@ -75,29 +77,61 @@ class HomeController extends AbstractController
      * @Route("/addEvent", name="addEvent")
      */
 
-    public function addEvent(Request $req, EntityManagerInterface $em): Response
+    public function addEvent(Request $req, EntityManagerInterface $em, StatusRepository $statusRepo, ParticipantRepository $partiRepo): Response
     {
-        $event = new Event(); // je crée une sortie
+        $statusCreated = new Status();
+        $statusOpen = new Status();
+
+        $event = new Event(); // je crée une sortie et un lieu
+        //$venues = $venueRepo->findAll();
         // creation du form avec asso. avec $event
 
-        $form =  $this->createForm(AddEventType::class,$event);
-        $form->handleRequest($req);
-        if ($form->isSubmitted() && $form->isValid())
-        {
-            if ($form->get('publish')->isClicked()) {
-                $event->setStatus(1);
-            }
-            if ($form->get('save')->isClicked()) {
-                $event->setStatus(2);
-            }
-            $em->persist($event);
-            $em->flush();
-            return $this->redirectToRoute('home.html.twig');
+        $statusAll = $statusRepo->findAll();
 
-    }
-        return $this->render('add.html.twig', [
-            'addEventForm' => $form->createView(),
-        ]);
+        foreach ($statusAll as $s) {
+            if ($s->getDescription() == "Open") {
+                $statusOpen = $s;
+            }
+            if ($s->getDescription() == "Created") {
+                $statusCreated = $s;
+            }
+        }
+            $user = $this->getUser();
+            $participant = new Participant();
+            $participants = $partiRepo->findAll();
+            foreach ($participants as $p) {
+                if ($p->getEmail() == $user->getUserIdentifier()) {
+                    $participant = $p;
+                }
+            }
+
+            $campus = $participant->getCampus();
+            $event->setCampus($campus);
+            $event->setOrganizer($participant);
+
+            $form = $this->createForm(AddEventType::class, $event);
+
+            // $form->get('campus')->setData($campus);
+
+            $form->handleRequest($req);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                if ($form->get('publish')->isClicked()) {
+                    $event->setStatus($statusOpen);
+                }
+                if ($form->get('save')->isClicked()) {
+                    $event->setStatus($statusCreated);
+                }
+
+                $em->persist($event);
+                $em->flush();
+                return $this->redirectToRoute('home');
+
+            }
+            return $this->render('add.html.twig', [
+                'addEventForm' => $form->createView(),
+            ]);
+        }
     }
 
 
@@ -140,4 +174,4 @@ class HomeController extends AbstractController
     }
 
 
-}
+
