@@ -26,29 +26,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+    private function getParticipantUser():Participant {
+        return $this->getUser();
+    }
     /**
      * @Route("/", name="home")
      */
 
 //je crée le formulaire dès le chargement de la page
-    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo, EntityManagerInterface $em , StatusRepository  $statusRepository): Response
+    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo, EntityManagerInterface $em, StatusRepository $statusRepository): Response
     {
-        $this->updateStatus($eventRepo,$em,$statusRepository);
+        $this->updateStatus($eventRepo, $em, $statusRepository);
 
 
         $now = new \DateTime();
         $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
 
-        $user = $this->getUser();
-        $participant = new Participant();
-        $participants = $partiRepo->findAll();
-
-        foreach ($participants as $p) {
-            if ($p->getEmail() == $user->getUserIdentifier()) {
-                $participant = $p;
-            }
-        }
-
+        $user = $this->getParticipantUser();
+        //$participant = new Participant();
+       //participants = $partiRepo->findAll();
 
         $events = $eventRepo->findAll();
         $form = $this->createForm(SearchEventType::class);
@@ -66,9 +62,8 @@ class HomeController extends AbstractController
         return $this->render('/home.html.twig', [
             'events' => $events,
             'form' => $form->createView(),
-            'user' => $user,
+            'user'=>$user,
             'now' => $now,
-            'participant' => $participant,
         ]);
     }
 
@@ -79,6 +74,7 @@ class HomeController extends AbstractController
 
     public function addEvent(Request $req, EntityManagerInterface $em, StatusRepository $statusRepo, ParticipantRepository $partiRepo): Response
     {
+        $user = $this->getParticipantUser();
         $statusCreated = new Status();
         $statusOpen = new Status();
 
@@ -96,82 +92,74 @@ class HomeController extends AbstractController
                 $statusCreated = $s;
             }
         }
-            $user = $this->getUser();
-            $participant = new Participant();
-            $participants = $partiRepo->findAll();
-            foreach ($participants as $p) {
-                if ($p->getEmail() == $user->getUserIdentifier()) {
-                    $participant = $p;
-                }
+
+
+        $campus = $user->getCampus();
+        $event->setCampus($campus);
+        $event->setOrganizer($user);
+
+        $form = $this->createForm(AddEventType::class, $event);
+
+        // $form->get('campus')->setData($campus);
+
+        $form->handleRequest($req);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->get('publish')->isClicked()) {
+                $event->setStatus($statusOpen);
+            }
+            if ($form->get('save')->isClicked()) {
+                $event->setStatus($statusCreated);
             }
 
-            $campus = $participant->getCampus();
-            $event->setCampus($campus);
-            $event->setOrganizer($participant);
 
-            $form = $this->createForm(AddEventType::class, $event);
+            $em->persist($event);
+            $em->flush();
+            return $this->redirectToRoute('home');
 
-            // $form->get('campus')->setData($campus);
-
-            $form->handleRequest($req);
-            if ($form->isSubmitted() && $form->isValid()) {
-
-                if ($form->get('publish')->isClicked()) {
-                    $event->setStatus($statusOpen);
-                }
-                if ($form->get('save')->isClicked()) {
-                    $event->setStatus($statusCreated);
-                }
-
-                $em->persist($event);
-                $em->flush();
-                return $this->redirectToRoute('home');
-
-            }
-            return $this->render('add.html.twig', [
-                'addEventForm' => $form->createView(),
-            ]);
         }
+        return $this->render('event/add.html.twig', [
+            'addEventForm' => $form->createView(),
+        ]);
     }
 
 
-    public function updateStatus (EventRepository $eventRepository, EntityManagerInterface $em , StatusRepository  $statusRepository) {
+    public function updateStatus(EventRepository $eventRepository, EntityManagerInterface $em, StatusRepository $statusRepository)
+    {
         // Récupérer la table des events et date du jour
 
         $allEvent = $eventRepository->findAll();
         $dateTimeNow = new \DateTime();
 
         $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
-        $statusEnded =$statusRepository->findBy(array('description' => "Ended"));
+        $statusEnded = $statusRepository->findBy(array('description' => "Ended"));
 
-    //rajouter en base de donnée le cas ARchived
+        //rajouter en base de donnée le cas ARchived
         //itérer dans la table pour tester la date
 
-        foreach ($allEvent as $event){
+        foreach ($allEvent as $event) {
             $dateEvent = $event->getDateTimeStart();
             $interval = $dateEvent->diff($dateTimeNow);
 
-                // évenement en cours
-                if ($dateEvent>$dateTimeNow){
-                    $event->setStatus($statusEnded[0]);
-                    $em->persist($event);
-                }
-                if ($interval->days > 31 and $dateEvent>$dateTimeNow){
-                    //réaliser un tableau des des évenements à update
-                    $event->setStatus($statusArchived[0]);
-                    $em->persist($event);
-                }
-
-
+            // évenement en cours
+            if ($dateEvent > $dateTimeNow) {
+                $event->setStatus($statusEnded[0]);
+                $em->persist($event);
+            }
+            if ($interval->days > 31 and $dateEvent > $dateTimeNow) {
+                //réaliser un tableau des des évenements à update
+                $event->setStatus($statusArchived[0]);
+                $em->persist($event);
+            }
 
 
         }
 
 
-
-            $em->flush();
+        $em->flush();
 
     }
+}
 
 
 
