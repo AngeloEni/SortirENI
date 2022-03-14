@@ -40,6 +40,16 @@ class Venue
      */
     private $events;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $longitude;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $latitude;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -93,6 +103,44 @@ class Venue
     {
         return $this->events;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * @param mixed $longitude
+     * @return Venue
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * @param mixed $latitude
+     * @return Venue
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+
 
     public function addEvent(Event $event): self
     {

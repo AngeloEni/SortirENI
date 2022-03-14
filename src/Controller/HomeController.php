@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\Participant;
 use App\Entity\Status;
+use App\Entity\Venue;
 use App\Form\AddEventType;
 use App\Form\SearchEventType;
 use App\Repository\EventRepository;
@@ -78,6 +79,7 @@ class HomeController extends AbstractController
         $user = $this->getParticipantUser();
         $statusCreated = new Status();
         $statusOpen = new Status();
+       // $newVenue = new Venue();
 
         $event = new Event(); // je crée une sortie et un lieu
         //$venues = $venueRepo->findAll();
@@ -103,11 +105,14 @@ class HomeController extends AbstractController
 
         $form = $this->createForm(AddEventType::class, $event);
 
-
         $form->handleRequest($req);
+
+
         if ($form->isSubmitted() && $form->isValid()) {
+
             $isClickedPublish = $form->get('publish')->isClicked();
             $isClickedSave = $form->get('save')->isClicked();
+
 
             if ($isClickedPublish) {
                 $event->setStatus($statusOpen);

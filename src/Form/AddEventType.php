@@ -23,18 +23,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AddEventType extends AbstractType
 {
-    /**
-     * @param ParticipantRepository $userRepository
-     */
-    public function setUserRepository(ParticipantRepository $userRepository): void
-    {
-        $this->userRepository = $userRepository;
-    }
-
-    public function __construct(ParticipantRepository $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
+//    /**
+//     * @param ParticipantRepository $userRepository
+//     */
+//    public function setUserRepository(ParticipantRepository $userRepository): void
+//    {
+//        $this->userRepository = $userRepository;
+//    }
+//
+//    public function __construct(ParticipantRepository $userRepository)
+//    {
+//        $this->userRepository = $userRepository;
+//    }
+    private $postCode =null;
+    private $street =null;
 
     public function buildForm(FormBuilderInterface $builder, $options): void
     {
@@ -55,11 +57,12 @@ class AddEventType extends AbstractType
                 'max' => '500',
             )))
             ->add('eventInfo', TextareaType::class)
-            ->add('campus', TextType::class, array(
-                'attr' => array(
-                    'readonly' => true,
-                    'disabled' => true,
-                )))
+            ->add('campus', EntityType::class, [
+                // looks for choices from this entity
+                'class' => Campus::class,
+                // uses the Venue.name property as the visible option string
+                'choice_label' => 'name',
+            ])
             ->add('town', EntityType::class, [
                 // looks for choices from this entity
                 'class' => Town::class,
@@ -80,11 +83,21 @@ class AddEventType extends AbstractType
                     'readonly' => true,
                     'disabled' => true,
                 ),
-                'mapped' => false))
+                'mapped' => false,
+                'required'=>false))
 
             ->add('postCode', TextType::class, array(
-                   'mapped' => false,
-               ))
+                'mapped' => false,
+        'required'=>false
+            ))
+            ->add('longitude', TextType::class, array(
+                'mapped' => false,
+                'required'=>false
+            ))
+            ->add('latitude', TextType::class, array(
+                'mapped' => false,
+                'required'=>false
+            ))
 
             ->add('save', SubmitType::class, ['label' => 'Enregistrer'])
             ->add('publish', SubmitType::class, ['label' => 'Publier'])
@@ -92,10 +105,10 @@ class AddEventType extends AbstractType
 
         $formModifier = function (FormInterface $form, Town $town = null, Venue $venue = null) {
             $venues = (null === $town) ? [] : $town->getVenues();
-            $postCode = (null === $town) ? '' : $town->getPostCode();
-            $street = (null === $venue) ? '' : $venue->getStreet();
+            $this->postCode = (null === $town) ? '' : $town->getPostCode();
+            $this->street = (null === $venue) ? '' : $venue->getStreet();
 
-            error_log(print_r($venue, true), 3, 'C:/annest.log');
+            // error_log(print_r($venue, true), 3, 'C:/annest.log');
 
             $form->add('venue', EntityType::class, [
                 'class' => Venue::class,
@@ -107,16 +120,18 @@ class AddEventType extends AbstractType
 
             $form->remove('postCode');
             $form->add('postCode', TextType::class, array(
-                'data' => $postCode,
+                'data' => $this->postCode,
                 'mapped' => false,
+                'required'=>false,
             ));
 
             $form->add('street', TextType::class, array(
                 'attr' => array(
-                    'readonly' => true,
+                    'readonly' => false,
                 ),
-                'data' => $street,
+                'data' => $this->street,
                 'mapped' => false,
+                'required'=>false,
             ));
         };
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier) {
@@ -135,7 +150,7 @@ class AddEventType extends AbstractType
         $builder->get('venue')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($formModifier) {
 
             $venue = $event->getForm()->getData();
-            error_log('toto', 3, 'C:/toto.log');
+            //  error_log('toto', 3, 'C:/toto.log');
             $formModifier($event->getForm()->getParent(), null, $venue);
 
         });
