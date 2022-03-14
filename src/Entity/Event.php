@@ -80,6 +80,7 @@ class Event
     private $campus;
 
 
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -258,5 +259,5 @@ class Event
     }
 
 
-    
+
 }
