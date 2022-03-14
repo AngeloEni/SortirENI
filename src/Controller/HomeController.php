@@ -48,13 +48,6 @@ class HomeController extends AbstractController
 
         $events = $eventRepo->findAll();
 
-        foreach ($events as $event){
-            if ( $event->getStatus()->getDescription()!= "Archived"
-                and !($event->getOrganizer()->getId() != $user->getId() and $event->getStatus()->getDescription() == "Created")){
-               array_push($eventsSorted, $event);
-            }
-        }
-
         $form = $this->createForm(SearchEventType::class);
         $form->handleRequest($req);
 
@@ -65,7 +58,13 @@ class HomeController extends AbstractController
             $events = $eventRepo->findByFilters($eventFilterModel, $user);
 
         }
-
+        // triage de events pour ne pas avoir les statuts archived et les created ou l'utilisateur n est pas organiseur
+        foreach ($events as $event){
+            if ( $event->getStatus()->getDescription()!= "Archived"
+                and !($event->getOrganizer()->getId() != $user->getId() and $event->getStatus()->getDescription() == "Created")){
+                array_push($eventsSorted, $event);
+            }
+        }
 
         return $this->render('/home.html.twig', [
             'events' => $eventsSorted,

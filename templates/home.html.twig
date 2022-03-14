@@ -79,8 +79,8 @@
 
 
                               {% if e.Status.description == "Created" and e.getOrganizer() == user%}
-                                  <td><a class="nav-link" href="#">Modifier</a></td>
-                                  <td><a class="nav-link" href="#">Publier</a></td>
+                                  <td><a class="nav-link" href="{{ path('editEvent', {id:e.id}) }}">Modifier</a></td>
+                                  <td><a class="nav-link" href="{{ path('publish', {id:e.id}) }}">Publier</a></td>
                               {% endif %}
 
                               {% if e.Status.description == "Open" and e.getOrganizer() == user%}
