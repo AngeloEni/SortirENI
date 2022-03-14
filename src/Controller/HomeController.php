@@ -19,14 +19,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-    /**
-     * @Route("/internal")
-     */
-
-
+/**
+ * @Route("/internal")
+ */
 class HomeController extends AbstractController
 {
-    private function getParticipantUser():Participant {
+    private function getParticipantUser(): Participant
+    {
         return $this->getUser();
     }
     /**
@@ -34,7 +33,7 @@ class HomeController extends AbstractController
      */
 
 //je crée le formulaire dès le chargement de la page
-    public function showAll(Request $req, EventRepository $eventRepo, ParticipantRepository $partiRepo, EntityManagerInterface $em, StatusRepository $statusRepository): Response
+    public function showAll(Request $req, EventRepository $eventRepo, EntityManagerInterface $em, StatusRepository $statusRepository): Response
     {
         $this->updateStatus($eventRepo, $em, $statusRepository);
 
@@ -43,8 +42,7 @@ class HomeController extends AbstractController
         $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
 
         $user = $this->getParticipantUser();
-        //$participant = new Participant();
-       //participants = $partiRepo->findAll();
+
 
         $events = $eventRepo->findAll();
         $form = $this->createForm(SearchEventType::class);
@@ -62,7 +60,7 @@ class HomeController extends AbstractController
         return $this->render('/home.html.twig', [
             'events' => $events,
             'form' => $form->createView(),
-            'user'=>$user,
+            'user' => $user,
             'now' => $now,
         ]);
     }
@@ -72,8 +70,10 @@ class HomeController extends AbstractController
      * @Route("/addEvent", name="addEvent")
      */
 
-    public function addEvent(Request $req, EntityManagerInterface $em, StatusRepository $statusRepo, ParticipantRepository $partiRepo): Response
+    public function addEvent(Request $req, EntityManagerInterface $em, StatusRepository $statusRepo): Response
     {
+        $now = new \DateTime();
+        $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
         $user = $this->getParticipantUser();
         $statusCreated = new Status();
         $statusOpen = new Status();
@@ -95,27 +95,32 @@ class HomeController extends AbstractController
 
 
         $campus = $user->getCampus();
+        $event->setDateTimeStart($now);
+        $event->setRegistrationClosingDate($now);
         $event->setCampus($campus);
         $event->setOrganizer($user);
 
         $form = $this->createForm(AddEventType::class, $event);
 
-        // $form->get('campus')->setData($campus);
 
         $form->handleRequest($req);
         if ($form->isSubmitted() && $form->isValid()) {
+            $isClickedPublish = $form->get('publish')->isClicked();
+            $isClickedSave = $form->get('save')->isClicked();
 
-            if ($form->get('publish')->isClicked()) {
+            if ($isClickedPublish) {
                 $event->setStatus($statusOpen);
             }
-            if ($form->get('save')->isClicked()) {
+            if ($isClickedSave) {
                 $event->setStatus($statusCreated);
             }
 
-
-            $em->persist($event);
-            $em->flush();
-            return $this->redirectToRoute('home');
+            if ($isClickedPublish || $isClickedSave) {
+                $em->persist($event);
+                $em->flush();
+                return $this->redirectToRoute('home');
+            }
+            //si c'est une requête ajax, il n'entrera pas dans le if
 
         }
         return $this->render('event/add.html.twig', [
