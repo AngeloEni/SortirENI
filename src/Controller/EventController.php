@@ -69,7 +69,7 @@ class EventController extends AbstractController
      */
     public function unregisterForEvent(Event $e, EntityManagerInterface $em): Response
     {
-        if ($e->getStatus()->getDescription() == "Open")
+        if ($e->getStatus()->getDescription() == "Open" or $e->getStatus()->getDescription() == "Closed")
         {
             $user = $this->getUser();
 
