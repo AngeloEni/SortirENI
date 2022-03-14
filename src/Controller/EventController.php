@@ -147,5 +147,17 @@ class EventController extends AbstractController
 
     }
 
+    /**
+     * @Route("/publishEvent/{id}", name="publishEvent")
+     */
+    public function publishEvent(Event $event, Request $req, EntityManagerInterface $em, StatusRepository $statusRepository): Response
+    {
+        $statusOpen = $statusRepository->findBy(array('description' => "Open"));
+
+        $event->setStatus($statusOpen[0]);
+            $em->flush();
+            return $this->redirectToRoute('home');
+        }
+
 
 }
