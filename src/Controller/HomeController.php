@@ -167,7 +167,7 @@ class HomeController extends AbstractController
 
 
             // évenement Ended filtre
-            if ($event->getStatus()->getDescription() == "Closed" and $dateEvent->modify('+'.$duration.' minutes') < $dateTimeNow) {
+            if ($event->getStatus()->getDescription() == "Ongoing" and $dateEvent->modify('+'.$duration.' minutes') < $dateTimeNow) {
                 $event->setStatus($statusEnded[0]);
                 $em->persist($event);
             }
