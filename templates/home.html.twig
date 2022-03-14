@@ -6,7 +6,7 @@
               <div class="col-md-9"></div>
               <div class="col-md-3">
                   <h5>Date du jour : {{ now| date('d-m-Y') }}</h5>
-                  <h5>Participant: {{ participant.fullname }}</h5>
+                  <h5>Participant: {{ user.fullname }}</h5>
               </div>
           </div>
       </div>
@@ -60,9 +60,7 @@
                               {% else %}
                               <td></td>
                               {% endif %}
-                              <td>{{ e.getOrganizer().getFirstname() }}</td>
-
-                             
+                              <td>{{ e.getOrganizer().getFullname() }}</td>
 
 
                               {% if e.Status.description == "Ongoing" or
@@ -80,7 +78,7 @@
                               {% endif %}
 
 
-                              {% if e.Status.description == "Created"%}
+                              {% if e.Status.description == "Created"and e.getOrganizer() == user%}
                                   <td><a class="nav-link" href="#">Modifier</a></td>
                                   <td><a class="nav-link" href="#">Publier</a></td>
                               {% endif %}
@@ -89,6 +87,9 @@
                               <td><a class="nav-link" href="#">Annuler</a></td>
                               {% endif %}
 
+                           {# j'utilise ça pour tester le edit en attendant que les status aient du sens :-)
+                             <td><a href="{{path('editEvent', {id:e.id})}}"class="nav-link">Modifier</a></td>
+                              <td><a href="{{path('cancelEvent', {id:e.id})}}"class="nav-link">Cancel</a></td>#}
 
                           </tr>
                           {% endfor %}
@@ -101,6 +102,5 @@
 
       <div class="m-3">
           <a href="{{path('addEvent')}}"  class="btn btn-primary btn-lg mt-5">Créer une sortie</a>
-
       </div>
   {% endblock %}

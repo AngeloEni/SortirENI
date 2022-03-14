@@ -4,12 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Event;
 
+use App\Form\AddEventType;
+use App\Form\CancelEventType;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
+use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpParser\Node\Expr\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
     /**
@@ -80,5 +84,51 @@ class EventController extends AbstractController
         return $this->redirectToRoute('home');
 
     }
+
+    /**
+     * @Route("/editEvent/{id}", name="editEvent")
+     */
+    public function editEvent(Event $event, Request $req, EntityManagerInterface $em): Response
+    {
+        // $now = new \DateTime();
+        // $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
+
+        $form = $this->createForm(AddEventType::class,$event);
+        $form->handleRequest($req);
+
+        if ($form->isSubmitted()){
+            $em->flush();
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('event/add.html.twig',
+            ['addEventForm'=> $form-> createView()]);
+
+    }
+
+
+    /**
+     * @Route("/cancelEvent/{id}", name="cancelEvent")
+     */
+    public function cancelEvent(Event $event, Request $req, EntityManagerInterface $em, StatusRepository $statusRepository ): Response
+    {
+        $statusCancelled = $statusRepository->findBy(array('description' => "Cancelled"));
+
+        $form = $this->createForm(CancelEventType::class,$event);
+        $form->handleRequest($req);
+
+        if ($form->isSubmitted()){
+            $event->setStatus($statusCancelled[0]);
+            $event->setEventInfo($event->getEventInfo().'   Annulée : '.$form['eventInfo']->getData());
+            $em->flush();
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('event/cancel.html.twig', [
+                'event'=>$event,
+                'addEventForm'=> $form-> createView()]);
+
+    }
+
 
 }
