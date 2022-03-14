@@ -23,6 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EventController extends AbstractController
 {
+
     /**
 
      * @Route("/event/{id}", name="app_event")
@@ -50,7 +51,7 @@ class EventController extends AbstractController
     /**
      * @Route("/RegisterForEvent/{id}", name="register_for_revent")
      */
-    public function registerForEvent(Event $e, EntityManagerInterface $em): Response
+    public function registerForEvent(Event $e, EntityManagerInterface $em, StatusRepository $sr): Response
     {
         $user = $this->getUser();
         $partincipantsTab = $e->getParticipants();
@@ -62,6 +63,12 @@ class EventController extends AbstractController
         {
 
             $e->addParticipant($user);
+
+            if(count($e->getParticipants()) == $e->getMaxParticipants()){
+                $statusClosed = $sr->findBy(array('description' => "Closed"));
+                $e->setStatus($statusClosed[0]);
+            }
+
             $em->flush();
         }
 
@@ -71,13 +78,23 @@ class EventController extends AbstractController
     /**
      * @Route("/unregisterForEvent/{id}", name="unregister_for_revent")
      */
-    public function unregisterForEvent(Event $e, EntityManagerInterface $em): Response
+    public function unregisterForEvent(Event $e, EntityManagerInterface $em, StatusRepository $sr): Response
     {
-        if ($e->getStatus()->getDescription() == "Open")
+        $user = $this->getUser();
+        $partincipantsTab = $e->getParticipants();
+
+        if ($e->getStatus()->getDescription() == "Open"
+            or $e->getStatus()->getDescription() == "Closed"
+            and $partincipantsTab->contains($user) == true)
         {
-            $user = $this->getUser();
+
+            if(count($e->getParticipants()) == $e->getMaxParticipants()){
+                $statusOpen = $sr->findBy(array('description' => "Open"));
+                $e->setStatus($statusOpen[0]);
+            }
 
             $e->removeParticipant($user);
+
             $em->flush();
         }
 
