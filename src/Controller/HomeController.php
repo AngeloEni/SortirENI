@@ -26,6 +26,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+    private function getParticipantUser():Participant {
+        return $this->getUser();
+    }
     /**
      * @Route("/", name="home")
      */
@@ -39,16 +42,9 @@ class HomeController extends AbstractController
         $now = new \DateTime();
         $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
 
-        $user = $this->getUser();
-        $participant = new Participant();
-        $participants = $partiRepo->findAll();
-
-        foreach ($participants as $p) {
-            if ($p->getEmail() == $user->getUserIdentifier()) {
-                $participant = $p;
-            }
-        }
-
+        $user = $this->getParticipantUser();
+        //$participant = new Participant();
+       //participants = $partiRepo->findAll();
 
         $events = $eventRepo->findAll();
         $form = $this->createForm(SearchEventType::class);
@@ -66,9 +62,8 @@ class HomeController extends AbstractController
         return $this->render('/home.html.twig', [
             'events' => $events,
             'form' => $form->createView(),
-            'user' => $user,
+            'user'=>$user,
             'now' => $now,
-            'participant' => $participant,
         ]);
     }
 
@@ -79,6 +74,7 @@ class HomeController extends AbstractController
 
     public function addEvent(Request $req, EntityManagerInterface $em, StatusRepository $statusRepo, ParticipantRepository $partiRepo): Response
     {
+        $user = $this->getParticipantUser();
         $statusCreated = new Status();
         $statusOpen = new Status();
 
@@ -96,6 +92,7 @@ class HomeController extends AbstractController
                 $statusCreated = $s;
             }
         }
+
         $user = $this->getUser();
         $participant = new Participant();
         $participants = $partiRepo->findAll();
@@ -129,6 +126,7 @@ class HomeController extends AbstractController
 
         }
         return $this->render('add.html.twig', [
+
             'addEventForm' => $form->createView(),
         ]);
     }
@@ -169,6 +167,7 @@ class HomeController extends AbstractController
         $em->flush();
 
     }
+}
 
 }
 
