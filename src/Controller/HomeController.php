@@ -138,6 +138,8 @@ class HomeController extends AbstractController
 
 
 
+
+
         $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
         $statusEnded = $statusRepository->findBy(array('description' => "Ended"));
         $statusOngoing = $statusRepository->findBy(array('description' => "Ongoing"));
@@ -151,6 +153,8 @@ class HomeController extends AbstractController
             $dateRegistration = $event->getRegistrationClosingDate();
             $interval = $dateEvent->diff($dateTimeNow);
             $duration = $event->getDuration();
+
+
 
             //évenement Closed filtre
             if( $event->getStatus()->getDescription() == "Open" and $dateTimeNow > $dateRegistration){
