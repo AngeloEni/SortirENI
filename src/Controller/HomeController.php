@@ -14,6 +14,7 @@ use App\Repository\VenueRepository;
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Node\Expr\Cast\Int_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -132,26 +133,47 @@ class HomeController extends AbstractController
     public function updateStatus(EventRepository $eventRepository, EntityManagerInterface $em, StatusRepository $statusRepository)
     {
         // Récupérer la table des events et date du jour
-
         $allEvent = $eventRepository->findAll();
         $dateTimeNow = new \DateTime();
 
+
+
         $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
         $statusEnded = $statusRepository->findBy(array('description' => "Ended"));
+        $statusOngoing = $statusRepository->findBy(array('description' => "Ongoing"));
+        $statusClosed = $statusRepository->findBy(array('description' => "Closed"));
 
-        //rajouter en base de donnée le cas ARchived
+        //rajouter en base de donnée le cas Archived
         //itérer dans la table pour tester la date
 
         foreach ($allEvent as $event) {
             $dateEvent = $event->getDateTimeStart();
+            $dateRegistration = $event->getRegistrationClosingDate();
             $interval = $dateEvent->diff($dateTimeNow);
+            $duration = $event->getDuration();
 
-            // évenement en cours
-            if ($dateEvent > $dateTimeNow) {
+            //évenement Closed filtre
+            if( $event->getStatus()->getDescription() == "Open" and $dateTimeNow > $dateRegistration){
+                $event->setStatus($statusClosed[0]);
+                $em->persist($event);
+            }
+
+            //évenement Ongoing filtre
+            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent and $dateTimeNow < $dateEvent->modify('+'.$duration.' minutes')){
+                $event->setStatus($statusOngoing[0]);
+                $em->persist($event);
+            }
+
+
+
+            // évenement Ended filtre
+            if ($event->getStatus()->getDescription() == "Closed" and $dateEvent->modify('+'.$duration.' minutes') < $dateTimeNow) {
                 $event->setStatus($statusEnded[0]);
                 $em->persist($event);
             }
-            if ($interval->days > 31 and $dateEvent > $dateTimeNow) {
+
+            // évenement Archived filtre
+            if ( $event->getStatus()->getDescription() == "Ended" and  $interval->days > 31 and $dateEvent < $dateTimeNow) {
                 //réaliser un tableau des des évenements à update
                 $event->setStatus($statusArchived[0]);
                 $em->persist($event);
