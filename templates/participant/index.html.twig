@@ -8,16 +8,27 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<div class="example-wrapper">
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
 
-    {{form_start(form)}}
+            {{form_start(form)}}
 
-    {{form_widget(form)}}
+            {{form_widget(form)}}
 
-    <button id="submit" name="submit" class="btn btn-success">Enregistrer</button>
+            <button id="submit" name="submit" class="btn btn-success">Enregistrer</button>
 
-    {{form_end(form)}}
+            {{form_end(form)}}
+        </div>
 
-    <img class="logo" src="{{ asset('uploads/')}}{{app.user.image}}" >
+        <div class="col-md-8">
+            <img class="logo img-fluid" src="{{ asset('uploads/')}}{{app.user.image}}" >
+        </div>
+
+    </div>
+</div>
+
+
+
 
 {% endblock %}
