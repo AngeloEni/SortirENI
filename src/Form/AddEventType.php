@@ -7,6 +7,7 @@ use App\Entity\Event;
 use App\Entity\Town;
 use App\Entity\Venue;
 use App\Repository\ParticipantRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -23,6 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AddEventType extends AbstractType
 {
+    private $em;
 //    /**
 //     * @param ParticipantRepository $userRepository
 //     */
@@ -31,12 +33,12 @@ class AddEventType extends AbstractType
 //        $this->userRepository = $userRepository;
 //    }
 //
-//    public function __construct(ParticipantRepository $userRepository)
-//    {
-//        $this->userRepository = $userRepository;
-//    }
-    private $postCode =null;
-    private $street =null;
+    public function __construct(EntityManagerInterface $em)
+    {
+       $this->em = $em;
+    }
+    private $postCode;
+    private $street;
 
     public function buildForm(FormBuilderInterface $builder, $options): void
     {
@@ -52,63 +54,57 @@ class AddEventType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('maxParticipants', TextType::class)
-            ->add('duration', null, array('attr' => array(
+            ->add('duration', null, ['attr' => [
                 'min' => '10',
                 'max' => '500',
-            )))
+            ]])
             ->add('eventInfo', TextareaType::class)
             ->add('campus', EntityType::class, [
                 // looks for choices from this entity
                 'class' => Campus::class,
-                // uses the Venue.name property as the visible option string
                 'choice_label' => 'name',
             ])
             ->add('town', EntityType::class, [
-                // looks for choices from this entity
+
                 'class' => Town::class,
-                // uses the Town.name property as the visible option string
                 'choice_label' => 'name',
-                'placeholder' => '',
                 'mapped' => false,
             ])
-            ->add('venue', EntityType::class, [
+
+
+        ->add('venue', EntityType::class, [
                 // looks for choices from this entity
                 'class' => Venue::class,
                 // uses the Venue.name property as the visible option string
                 'choice_label' => 'name',
                 'placeholder' => '',
             ])
-            ->add('street', TextType::class, array(
+
+            ->add('postCode', TextType::class,[
                 'attr' => array(
                     'readonly' => true,
                     'disabled' => true,
                 ),
                 'mapped' => false,
-                'required'=>false))
+            ])
 
-            ->add('postCode', TextType::class, array(
-                'mapped' => false,
-        'required'=>false
-            ))
-            ->add('longitude', TextType::class, array(
+          /*  ->add('longitude', TextType::class,[
                 'mapped' => false,
                 'required'=>false
-            ))
-            ->add('latitude', TextType::class, array(
+            ])
+            ->add('latitude', TextType::class,[
                 'mapped' => false,
                 'required'=>false
-            ))
+            ])*/
 
             ->add('save', SubmitType::class, ['label' => 'Enregistrer'])
             ->add('publish', SubmitType::class, ['label' => 'Publier'])
             ->add('cancel', ResetType::class, ['label' => 'Annuler']);
 
-        $formModifier = function (FormInterface $form, Town $town = null, Venue $venue = null) {
+        $formModifierTown = function (FormInterface $form, Town $town = null) {
             $venues = (null === $town) ? [] : $town->getVenues();
-            $this->postCode = (null === $town) ? '' : $town->getPostCode();
-            $this->street = (null === $venue) ? '' : $venue->getStreet();
 
-            // error_log(print_r($venue, true), 3, 'C:/annest.log');
+            // error_log(print_r($postCode, true), 3, 'C:/www.log');
 
             $form->add('venue', EntityType::class, [
                 'class' => Venue::class,
@@ -117,43 +113,80 @@ class AddEventType extends AbstractType
                 'choice_label' => 'name',
                 'choices' => $venues,
             ]);
-
-            $form->remove('postCode');
-            $form->add('postCode', TextType::class, array(
-                'data' => $this->postCode,
-                'mapped' => false,
-                'required'=>false,
-            ));
-
-            $form->add('street', TextType::class, array(
-                'attr' => array(
-                    'readonly' => false,
-                ),
-                'data' => $this->street,
-                'mapped' => false,
-                'required'=>false,
-            ));
         };
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier) {
+
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifierTown) {
             $form = $event->getForm();
+            $data = $event->getData();
             $town = $form['town']->getData();
             $venue = $form['venue']->getData();
 
-            $formModifier($form, $town, $venue);
-        });
-        $builder->get('town')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($formModifier) {
-            $town = $event->getForm()->getData();
-            //$this->venue = $town
-            $formModifier($event->getForm()->getParent(), $town, null);
+
+            $form->add('campus', TextType::class,[
+                'data' => $data->getCampus()->getName(),
+                'attr' => array(
+                    'readonly' => true,
+                    'disabled' => true,
+                ),
+                'mapped' => false]);
+
+
+           if ($data->getVenue()) {
+                $town = $data->getVenue()->getTown();
+
+               $form->add('street', TextType::class,[
+                   'data' => $data->getVenue()->getStreet(),
+                   'attr' => array(
+                       'readonly' => true,
+                       'disabled' => true,
+                   ),
+                   'mapped' => false])
+
+               ->add('town', EntityType::class, [
+
+                   'class' => Town::class,
+                   'choice_label' => 'name',
+                   'data' => $data->getVenue()->getTown(),
+                   'mapped' => false,
+               ])
+              ->add('postCode', TextType::class, [
+                   'data' => $town->getPostCode(),
+                   'attr' => array(
+                       'readonly' => true,
+                       'disabled' => true,
+                   ),
+                   'mapped' => false]);
+
+            }
+
+
+            $formModifierTown($form, $town);
+
         });
 
-        $builder->get('venue')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($formModifier) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($formModifierTown) {
+            $form = $event->getForm();
+            $data = $event->getData();
 
-            $venue = $event->getForm()->getData();
-            //  error_log('toto', 3, 'C:/toto.log');
-            $formModifier($event->getForm()->getParent(), null, $venue);
+
+
+            if (isset($data['town']) && !empty($data['town'])) {
+                $repository =  $this->em->getRepository(Town::class);
+                $town = $repository->find($data['town']);
+                $data['postCode']=$town->getPostCode();
+                $formModifierTown($form, $town);
+            }
+            if (isset($data['venue']) && !empty($data['venue'])) {
+                $repository =  $this->em->getRepository(Venue::class);
+                $venue = $repository->find($data['venue']);
+                $data['street']=$venue->getStreet();
+
+            }
+            $event->setData($data);
 
         });
+
     }
 
 

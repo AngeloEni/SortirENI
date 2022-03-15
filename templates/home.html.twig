@@ -60,7 +60,7 @@
                               {% else %}
                               <td></td>
                               {% endif %}
-                              <td>{{ e.getOrganizer().getFullname() }}</td>
+                              <td onclick="window.location='{{ path('profil', {'id': e.organizer.id}) }}';">{{ e.getOrganizer().getFullname() }}</td>
 
 
                               {% if e.Status.description == "Ongoing" or
@@ -86,7 +86,7 @@
                               {% endif %}
 
                               {% if e.Status.description == "Open" and e.getOrganizer() == user%}
-                              <td><a class="nav-link" href="#">Annuler</a></td>
+                              <td><a class="nav-link" href="{{path('cancelEvent', {id:e.id})}}">Annuler</a></td>
                               {% endif %}
 
                            {# j'utilise ça pour tester le edit en attendant que les status aient du sens :-)
