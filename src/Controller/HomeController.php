@@ -44,9 +44,7 @@ class HomeController extends AbstractController
         $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
 
         $user = $this->getParticipantUser();
-        $eventsSorted =array();
-
-        $events = $eventRepo->findAll();
+        $eventsSorted = array();
 
         $form = $this->createForm(SearchEventType::class);
         $form->handleRequest($req);
@@ -57,11 +55,13 @@ class HomeController extends AbstractController
 
             $events = $eventRepo->findByFilters($eventFilterModel, $user);
 
+        } else { $events = $eventRepo->findAll();
         }
+
         // triage de events pour ne pas avoir les statuts archived et les created ou l'utilisateur n est pas organiseur
-        foreach ($events as $event){
-            if ( $event->getStatus()->getDescription()!= "Archived"
-                and !($event->getOrganizer()->getId() != $user->getId() and $event->getStatus()->getDescription() == "Created")){
+        foreach ($events as $event) {
+            if ($event->getStatus()->getDescription() != "Archived"
+                and !($event->getOrganizer()->getId() != $user->getId() and $event->getStatus()->getDescription() == "Created")) {
                 array_push($eventsSorted, $event);
             }
         }
@@ -86,7 +86,7 @@ class HomeController extends AbstractController
         $user = $this->getParticipantUser();
         $statusCreated = new Status();
         $statusOpen = new Status();
-       // $newVenue = new Venue();
+        // $newVenue = new Venue();
 
         $event = new Event(); // je crée une sortie et un lieu
         //$venues = $venueRepo->findAll();
@@ -149,9 +149,6 @@ class HomeController extends AbstractController
         $dateTimeNow = new \DateTime();
 
 
-
-
-
         $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
         $statusEnded = $statusRepository->findBy(array('description' => "Ended"));
         $statusOngoing = $statusRepository->findBy(array('description' => "Ongoing"));
@@ -167,29 +164,27 @@ class HomeController extends AbstractController
             $duration = $event->getDuration();
 
 
-
             //évenement Closed filtre
-            if( $event->getStatus()->getDescription() == "Open" and $dateTimeNow > $dateRegistration){
+            if ($event->getStatus()->getDescription() == "Open" and $dateTimeNow > $dateRegistration) {
                 $event->setStatus($statusClosed[0]);
                 $em->persist($event);
             }
 
             //évenement Ongoing filtre
-            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent and $dateTimeNow < $dateEvent->modify('+'.$duration.' minutes')){
+            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent and $dateTimeNow < $dateEvent->modify('+' . $duration . ' minutes')) {
                 $event->setStatus($statusOngoing[0]);
                 $em->persist($event);
             }
 
 
-
             // évenement Ended filtre
-            if ($event->getStatus()->getDescription() == "Ongoing" and $dateEvent->modify('+'.$duration.' minutes') < $dateTimeNow) {
+            if ($event->getStatus()->getDescription() == "Ongoing" and $dateEvent->modify('+' . $duration . ' minutes') < $dateTimeNow) {
                 $event->setStatus($statusEnded[0]);
                 $em->persist($event);
             }
 
             // évenement Archived filtre
-            if ( $event->getStatus()->getDescription() == "Ended" and  $interval->days > 31 and $dateEvent < $dateTimeNow) {
+            if ($event->getStatus()->getDescription() == "Ended" and $interval->days > 31 and $dateEvent < $dateTimeNow) {
                 //réaliser un tableau des des évenements à update
                 $event->setStatus($statusArchived[0]);
                 $em->persist($event);
