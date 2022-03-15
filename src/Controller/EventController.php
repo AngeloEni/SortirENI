@@ -136,7 +136,7 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted()){
             $event->setStatus($statusCancelled[0]);
-            $event->setEventInfo($event->getEventInfo().'   Annulée : '.$form['eventInfo']->getData());
+            $event->setEventInfo($event->getEventInfo().'\n   Annulée : '.$form['eventInfo']->getData());
             $em->flush();
             return $this->redirectToRoute('home');
         }

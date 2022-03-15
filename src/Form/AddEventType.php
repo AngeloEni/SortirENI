@@ -35,8 +35,9 @@ class AddEventType extends AbstractType
 //
     public function __construct(EntityManagerInterface $em)
     {
-       $this->em = $em;
+        $this->em = $em;
     }
+
     private $postCode;
     private $street;
 
@@ -70,32 +71,34 @@ class AddEventType extends AbstractType
                 'choice_label' => 'name',
                 'mapped' => false,
             ])
-
-
-        ->add('venue', EntityType::class, [
+            ->add('street', TextType::class, [
+                'attr' => array(
+                    'readonly' => true,
+                    'disabled' => true,
+                ),
+                'mapped' => false])
+            ->add('venue', EntityType::class, [
                 // looks for choices from this entity
                 'class' => Venue::class,
                 // uses the Venue.name property as the visible option string
                 'choice_label' => 'name',
                 'placeholder' => '',
             ])
-
-            ->add('postCode', TextType::class,[
+            ->add('postCode', TextType::class, [
                 'attr' => array(
                     'readonly' => true,
                     'disabled' => true,
                 ),
                 'mapped' => false,
             ])
-
-          /*  ->add('longitude', TextType::class,[
-                'mapped' => false,
-                'required'=>false
-            ])
-            ->add('latitude', TextType::class,[
-                'mapped' => false,
-                'required'=>false
-            ])*/
+            /*  ->add('longitude', TextType::class,[
+                  'mapped' => false,
+                  'required'=>false
+              ])
+              ->add('latitude', TextType::class,[
+                  'mapped' => false,
+                  'required'=>false
+              ])*/
 
             ->add('save', SubmitType::class, ['label' => 'Enregistrer'])
             ->add('publish', SubmitType::class, ['label' => 'Publier'])
@@ -123,7 +126,7 @@ class AddEventType extends AbstractType
             $venue = $form['venue']->getData();
 
 
-            $form->add('campus', TextType::class,[
+            $form->add('campus', TextType::class, [
                 'data' => $data->getCampus()->getName(),
                 'attr' => array(
                     'readonly' => true,
@@ -132,31 +135,30 @@ class AddEventType extends AbstractType
                 'mapped' => false]);
 
 
-           if ($data->getVenue()) {
+            if ($data->getVenue()) {
                 $town = $data->getVenue()->getTown();
 
-               $form->add('street', TextType::class,[
-                   'data' => $data->getVenue()->getStreet(),
-                   'attr' => array(
-                       'readonly' => true,
-                       'disabled' => true,
-                   ),
-                   'mapped' => false])
+                $form->add('street', TextType::class, [
+                    'data' => $data->getVenue()->getStreet(),
+                    'attr' => array(
+                        'readonly' => true,
+                        'disabled' => true,
+                    ),
+                    'mapped' => false])
+                    ->add('town', EntityType::class, [
 
-               ->add('town', EntityType::class, [
-
-                   'class' => Town::class,
-                   'choice_label' => 'name',
-                   'data' => $data->getVenue()->getTown(),
-                   'mapped' => false,
-               ])
-              ->add('postCode', TextType::class, [
-                   'data' => $town->getPostCode(),
-                   'attr' => array(
-                       'readonly' => true,
-                       'disabled' => true,
-                   ),
-                   'mapped' => false]);
+                        'class' => Town::class,
+                        'choice_label' => 'name',
+                        'data' => $data->getVenue()->getTown(),
+                        'mapped' => false,
+                    ])
+                    ->add('postCode', TextType::class, [
+                        'data' => $town->getPostCode(),
+                        'attr' => array(
+                            'readonly' => true,
+                            'disabled' => true,
+                        ),
+                        'mapped' => false]);
 
             }
 
@@ -170,17 +172,16 @@ class AddEventType extends AbstractType
             $data = $event->getData();
 
 
-
             if (isset($data['town']) && !empty($data['town'])) {
-                $repository =  $this->em->getRepository(Town::class);
+                $repository = $this->em->getRepository(Town::class);
                 $town = $repository->find($data['town']);
-                $data['postCode']=$town->getPostCode();
+                $data['postCode'] = $town->getPostCode();
                 $formModifierTown($form, $town);
             }
             if (isset($data['venue']) && !empty($data['venue'])) {
-                $repository =  $this->em->getRepository(Venue::class);
+                $repository = $this->em->getRepository(Venue::class);
                 $venue = $repository->find($data['venue']);
-                $data['street']=$venue->getStreet();
+                $data['street'] = $venue->getStreet();
 
             }
             $event->setData($data);
