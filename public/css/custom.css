@@ -1,0 +1,17 @@
+ #red-button::before{
+    background: #f27370;
+}
+ #yellow-button::before{
+     background: #ede862;
+ }
+ #green-button::before{
+     background: #7dd87d;
+ }
+ #form-filter{
+     font-family: 'Lobster', cursive;
+     font-size: large;
+     color: #ede862;
+ }
+#navbar{
+    background: rgba(0,0,0,0.1);
+}

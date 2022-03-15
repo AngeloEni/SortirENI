@@ -1,108 +1,179 @@
 {% extends 'base.html.twig' %}
   {% block body %}
-      <div class="container-fluid">
-      <div class="container">
-          <div class="row">
-              <div class="col-md-9"></div>
-              <div class="col-md-3">
-                  <h5>Date du jour : {{ now| date('d-m-Y') }}</h5>
-                  <h5>Participant: {{ user.fullname }}</h5>
-              </div>
-          </div>
-      </div>
-      <div class="row">
-      <div class="col-md-6">
-          <h2 class="mb-5">Filtrer les sorties</h2>
-          {# form #}
-          {{ form_start (form) }}
 
-          {{ form_widget (form) }}
-      </div>
-      <div class="col-md-4">
+      <!-- slider Area Start-->
+      <div class="slider-area ">
+          <!-- Mobile Menu -->
+          <div class="slider-active">
+              <div class="single-slider hero-overly  slider-height d-flex align-items-center"
+                   data-background={{ asset('img/home-image.jpg') }}>
+                  <div class="container">
+                      <div class="row">
+                          <div class="col-xl-9 col-lg-9 col-md-9">
+                              <div class="hero__caption">
+                                  <h1>Trouve tes copains grognons !</h1>
+                                  <p>Bonjour {{ user.fullname }}, nous sommes le {{ now| date('d-m-Y') }}</p>
 
-          <div class="m-3">
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Search Box -->
+                      <div class="row">
+                          <div class="col-xl-12">
+                              <div class="row">
+                                  <div class="col-md-6">
 
-              <div class="col-md-2">
-                  <button class="btn btn-primary btn-lg mt-5" type="submit">
-                      Search
-                  </button>
-              </div>
-          </div>
-      </div>
-      {{ form_end (form) }}
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-xs-12 ">
-                  <div class="overflow-auto">
-                      <table class="table table-striped table-hover ">
-                          <thead>
-                          <tr>
-                              <th scope="col">Nom de la sortie</th>
-                              <th scope="col">Date de la sortie</th>
-                              <th scope="col">Clôture</th>
-                              <th scope="col">Inscrits/places</th>
-                              <th scope="col">Etat</th>
-                              <th scope="col">Instrit(e)</th>
-                              <th scope="col">Organisateur</th>
-                              <th scope="col">Actions</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr>
-                              {% for e in events %}
-                              <td>{{ e.name }}</td>
-                              <td>{{ e.dateTimeStart| date('d-m-Y') }}</td>
-                              <td>{{ e.registrationClosingDate| date('d-m-Y') }}</td>
-                              <td>{{ e.Participants|length }}/{{ e.maxParticipants }}</td>
-                              <td>{{ e.Status.description }}</td>
-                              {% if user in e.participants %}
-                                  <td>Inscrit</td>
-                              {% else %}
-                              <td></td>
-                              {% endif %}
-                              <td onclick="window.location='{{ path('profil', {'id': e.organizer.id}) }}';">{{ e.getOrganizer().getFullname() }}</td>
+                                  </div>
+                                  <div class="col-md-6">
 
+                                  </div>
+                                  <div class="col-xs-12">
 
-                              {% if e.Status.description == "Ongoing" or
-                                    e.Status.description == "Closed" or
-                                    e.Status.description == "Open" or
-                                    e.Status.description == "Cancelled" or
-                                    e.Status.description == "Ended" %}
-                              <td><a class="nav-link" href="{{ path('app_event', {id:e.id}) }}">Afficher</a></td>
-                                    {% if user in e.participants and (e.Status.description == "Open" or e.Status.description == "Closed") %}
-                                        <td><a class="nav-link" href="{{ path('unregister_for_revent', {id:e.id}) }}"> Se desister</a></td>
-                                    {% elseif e.Status.description == "Open" and user in e.participants == false and e.getOrganizer() != user %}
-                                        <td><a class="nav-link" href="{{ path('register_for_revent', {id:e.id}) }}"> S'inscrire</a></td>
-                                    {% endif %}
+                                  </div>
+                              </div>
+                              <!-- form -->
+                              <form id="form-filter" action="#" class="search-box">
+                                  {{ form_start (form) }}
+                                  <div class="input mb-10">
+                                      {{ form_row (form.name) }}
+                                      <div class="form-select form-select-sm mb-3">
+                                          {{ form_row (form.campus) }}
+                                      </div>
+                                  </div>
+                                  <div>
+                                      {{ form_row (form.earliestDate) }}
+                                      {{ form_row (form.latestDate) }}
+                                  </div>
+                                  <div>
+                                      {{ form_row (form.myOrganisedEvents) }}
 
-                              {% endif %}
+                                      {{ form_row (form.myEvents) }}
 
+                                      {{ form_row (form.otherEvents) }}
 
-                              {% if e.Status.description == "Created" and e.getOrganizer() == user%}
+                                      {{ form_row (form.pastEvents) }}
+                                  </div>
+                                  <div class="search-form mb-30">
+                                      <button id="yellow-button" class="btn btn-primary btn-lg mt-5" type="submit">
+                                          GO !!
+                                      </button>
+                                  </div>
+                                  {{ form_end (form) }}
+                              </form>
 
-                                  <td><a class="nav-link" href="{{path('editEvent', {id:e.id})}}">Modifier</a></td>
-                                  <td><a class="nav-link" href="{{ path('publishEvent', {id:e.id}) }}">Publier</a></td>
-
-                              {% endif %}
-
-                              {% if e.Status.description == "Open" and e.getOrganizer() == user%}
-                              <td><a class="nav-link" href="{{path('cancelEvent', {id:e.id})}}">Annuler</a></td>
-                              {% endif %}
-
-                           {# j'utilise ça pour tester le edit en attendant que les status aient du sens :-)
-                             <td><a href="{{path('editEvent', {id:e.id})}}"class="nav-link">Modifier</a></td>
-                              <td><a href="{{path('cancelEvent', {id:e.id})}}"class="nav-link">Cancel</a></td>#}
-
-                          </tr>
-                          {% endfor %}
-                          </tbody>
-                      </table>
+                          </div>
+                      </div>
                   </div>
               </div>
           </div>
       </div>
+      <!-- slider Area End-->
+
+
+      <div class="container-fluid">
+      <div class="row">
+      <h2 class="mb-5 ml-5">Filtrer les sorties</h2>
+      </div>
+      <div class="container-fluid">
+      <div class="row">
+          <div class="col-12 ">
+              <div class="overflow-auto">
+                  <table class="table table-striped table-hover ">
+                      <thead>
+                      <tr>
+                          <th scope="col">Nom de la sortie</th>
+                          <th scope="col">Date de la sortie</th>
+                          <th scope="col">Clôture</th>
+                          <th scope="col">Inscrits/places</th>
+                          <th scope="col">Etat</th>
+                          <th scope="col">Instrit(e)</th>
+                          <th scope="col">Organisateur</th>
+                          <th scope="col-2">Actions</th>
+
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                          {% for e in events %}
+                          <td>{{ e.name }}</td>
+                          <td>{{ e.dateTimeStart| date('d-m-Y') }}</td>
+                          <td>{{ e.registrationClosingDate| date('d-m-Y') }}</td>
+                          <td>{{ e.Participants|length }}/{{ e.maxParticipants }}</td>
+                          <td>{{ e.Status.description }}</td>
+                          {% if user in e.participants %}
+                              <td>Inscrit</td>
+                          {% else %}
+                              <td></td>
+                          {% endif %}
+                          <td onclick="window.location='{{ path('profil', {'id': e.organizer.id}) }}';">{{ e.getOrganizer().getFullname() }}</td>
+
+
+                          {% if e.Status.description == "Ongoing" or
+                              e.Status.description == "Closed" or
+                              e.Status.description == "Open" or
+                              e.Status.description == "Cancelled" or
+                              e.Status.description == "Ended" %}
+                              <td>
+                                  <a class="nav-link button " href="{{ path('app_event', {id:e.id}) }}">
+                                      <button id="green-button" type="button" class="btn active">Afficher
+                                      </button>
+                                  </a>
+                              </td>
+                              {% if user in e.participants and (e.Status.description == "Open" or e.Status.description == "Closed") %}
+                                  <td><a class="nav-link" href="{{ path('unregister_for_revent', {id:e.id}) }}">
+                                          <button id="yellow-button" type="button" class="btn active">Se Desister
+                                          </button>
+                                        </a>
+                              {% elseif e.Status.description == "Open" and user in e.participants == false and e.getOrganizer() != user %}
+                                  <td><a class="nav-link" href="{{ path('register_for_revent', {id:e.id}) }}">
+                                          <button id="green-button" type="button" class="btn active">S'Inscrire
+                                          </button>
+                                      </a>
+                                  </td>
+
+                              {% endif %}
+                          {% else %}
+                              <td></td>
+                          {% endif %}
+
+
+                          {% if e.Status.description == "Created" and e.getOrganizer() == user %}
+
+                              <td><a class="nav-link" href="{{ path('editEvent', {id:e.id}) }}">
+                                      <button id="yellow-button" type="button" class="btn active">Modifier
+                                      </button>
+                                  </a>
+                              </td>
+                              <td><a class="nav-link" href="{{ path('publishEvent', {id:e.id}) }}">
+                                      <button id="green-button" type="button" class="btn active">Publier
+                                      </button>
+                                  </a>
+                              </td>
+                          {% else %}
+                              <td></td>
+                          {% endif %}
+
+                          {% if e.Status.description == "Open" and e.getOrganizer() == user %}
+                              <td>
+                              <a class="nav-link" href="{{ path('cancelEvent', {id:e.id}) }}">
+                                  <button id="red-button" type="button" class="btn active">Annuler
+                                  </button>
+                              </a>
+                              </td>
+                          {% else %}
+                              <td></td>
+                          {% endif %}
+
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+
 
       <div class="m-3">
-          <a href="{{path('addEvent')}}"  class="btn btn-primary btn-lg mt-5">Créer une sortie</a>
+          <a href="{{ path('addEvent') }}" class="btn btn-primary btn-lg mt-5">Créer une sortie</a>
       </div>
   {% endblock %}
