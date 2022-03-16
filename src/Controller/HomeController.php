@@ -147,7 +147,9 @@ class HomeController extends AbstractController
         // Récupérer la table des events et date du jour
         $allEvent = $eventRepository->findAll();
         $dateTimeNow = new \DateTime();
-        $dateTimeNow->setTimezone(new \DateTimeZone('+0100'));
+        //$dateTimeNow->setTimezone(new \DateTimeZone('+0100'));
+
+
 
 
 
@@ -167,6 +169,10 @@ class HomeController extends AbstractController
 
 
 
+            $endEvent = clone $dateEvent;
+            $endEvent->modify('+' . $duration . ' minutes');
+
+
             //évenement Closed filtre
             if ($event->getStatus()->getDescription() == "Open" and $dateTimeNow > $dateRegistration) {
                 $event->setStatus($statusClosed[0]);
@@ -174,24 +180,24 @@ class HomeController extends AbstractController
             }
 
             //évenement Ongoing filtre
-            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow >= $dateEvent and $dateTimeNow <= $dateEvent->modify('+' . $duration . ' minutes')) {
+            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent and $dateTimeNow < $endEvent) {
                 $event->setStatus($statusOngoing[0]);
                 $em->persist($event);
             }
 
 
             // évenement Ended filtre
-            if ($event->getStatus()->getDescription() == "Ongoing" and $dateEvent->modify('+' . $duration . ' minutes') < $dateTimeNow) {
+            if ($event->getStatus()->getDescription() == "Ongoing" and $endEvent < $dateTimeNow) {
                 $event->setStatus($statusEnded[0]);
                 $em->persist($event);
             }
 
-            // méthode seulement en cas de fixture
-
-            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent ) {
-                $event->setStatus($statusEnded[0]);
-                $em->persist($event);
-            }
+//            // méthode seulement en cas de fixture
+//
+//            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent ) {
+//                $event->setStatus($statusEnded[0]);
+//                $em->persist($event);
+//            }
 
 
             // évenement Archived filtre
