@@ -70,6 +70,8 @@ class ParticipantController extends AbstractController
 
             $em->persist($participant);
             $em->flush();
+            // user feedback si l'image est ajoutée avec succès
+            $this->addFlash('success', 'Image ajoutée !');
 
         }
 

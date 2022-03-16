@@ -21,25 +21,17 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\LessThan;
 
 class AddEventType extends AbstractType
 {
     private $em;
-//    /**
-//     * @param ParticipantRepository $userRepository
-//     */
-//    public function setUserRepository(ParticipantRepository $userRepository): void
-//    {
-//        $this->userRepository = $userRepository;
-//    }
-//
+
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
     }
 
-    private $postCode;
-    private $street;
 
     public function buildForm(FormBuilderInterface $builder, $options): void
     {
