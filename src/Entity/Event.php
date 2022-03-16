@@ -6,6 +6,8 @@ use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=EventRepository::class)
@@ -21,11 +23,13 @@ class Event
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Assert\NotBlank(message="Ta sortie doit avoir un nom !")
      */
     private $name;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\GreaterThan("today UTC+1")
      */
     private $dateTimeStart;
 
@@ -35,8 +39,11 @@ class Event
     private $duration;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
+     * @Assert\LessThan(propertyPath="dateTimeStart")
      */
+
+
     private $registrationClosingDate;
 
     /**
@@ -46,6 +53,7 @@ class Event
 
     /**
      * @ORM\Column(type="text")
+     *  @Assert\NotBlank()
      */
     private $eventInfo;
 
