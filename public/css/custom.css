@@ -1,0 +1,42 @@
+ #red-button::before{
+    background: #f27370;
+}
+ #yellow-button::before{
+     background: #ede862;
+ }
+ #green-button::before{
+     background: #7dd87d;
+ }
+ #form-filter{
+     font-family: 'Lobster', cursive;
+     font-size: large;
+     color: #ede862;
+ }
+#navbar{
+    background: rgba(0,0,0,0.1);
+}
+
+#bagdeCreated{
+    background: #cbf078;
+}
+
+ #bagdeOpen{
+     background: #7dd87d;
+ }
+
+ #bagdeClosed{
+     background: #ff6f3c;
+ }
+
+ #bagdeCancelled{
+     background: #f95959;
+ }
+
+ #bagdeEnded{
+     background: #e46161;
+ }
+
+ #bagdeOngoing{
+     background-color: #21d190;
+     background-image: linear-gradient(315deg, #21d190 0%, #d65bca 74%);
+ }
