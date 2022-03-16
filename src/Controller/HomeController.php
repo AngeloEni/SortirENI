@@ -149,7 +149,6 @@ class HomeController extends AbstractController
         $dateTimeNow = new \DateTime();
         $dateTimeNow->setTimezone(new \DateTimeZone('+0100'));
 
-        //dd($dateTimeNow);
 
 
         $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
@@ -166,7 +165,7 @@ class HomeController extends AbstractController
             $interval = $dateEvent->diff($dateTimeNow);
             $duration = $event->getDuration();
 
-            //dd($dateEvent->modify('+' . $duration . ' minutes'));
+
 
             //évenement Closed filtre
             if ($event->getStatus()->getDescription() == "Open" and $dateTimeNow > $dateRegistration) {
