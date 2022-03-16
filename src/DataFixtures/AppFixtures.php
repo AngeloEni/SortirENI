@@ -85,7 +85,7 @@ class AppFixtures extends Fixture
 
     public function generateStatus(){
 
-        $statusArray = Array("Created", "Open", "Closed", "Ongoing", "Ended", "Cancelled");
+        $statusArray = Array("Created", "Open", "Closed", "Ongoing", "Ended", "Cancelled", "Archived");
 
         foreach ($statusArray as $s){
             $status = new Status();
@@ -135,7 +135,7 @@ class AppFixtures extends Fixture
         $status = $this->manager->getRepository(Status::class)->findAll();
         $venues = $this->manager->getRepository(Venue::class)->findAll();
         $participants = $this->manager->getRepository(Participant::class)->findAll();
-
+        $statusOpen = $this->manager->getRepository(Status::class)->findBy(array('description'=>"Open"));
 
 
         for ($i = 0; $i < 10; $i++){
@@ -151,7 +151,7 @@ class AppFixtures extends Fixture
             $event->setMaxParticipants(20);
             $event->setEventInfo("Bonjour");
             $event->setCampus($this->generator->randomElement($campus));
-            $event->setStatus($this->generator->randomElement($status));
+            $event->setStatus($statusOpen[0]);
             $event->setVenue($this->generator->randomElement($venues));
             $event->setOrganizer($this->generator->randomElement($participants));
             $event->addParticipant($this->generator->randomElement($participants));

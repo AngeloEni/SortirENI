@@ -84,10 +84,10 @@
                           <th scope="col">Nom de la sortie</th>
                           <th scope="col">Date de la sortie</th>
                           <th scope="col">Clôture</th>
-                          <th scope="col">Inscrits/places</th>
+                          <th scope="col">Inscrit.e.s/places</th>
                           <th scope="col">Etat</th>
-                          <th scope="col">Instrit(e)</th>
-                          <th scope="col">Organisateur</th>
+                          <th scope="col">Inscrit.e</th>
+                          <th scope="col">Organisateur.ice</th>
                           <th scope="col-2">Actions</th>
 
                       </tr>
@@ -100,8 +100,23 @@
                           <td>{{ e.registrationClosingDate| date('d-m-Y') }}</td>
                           <td>{{ e.Participants|length }}/{{ e.maxParticipants }}</td>
                           <td>{{ e.Status.description }}</td>
+
+                              {% if e.Status.description == "Created" %}
+                              <td><span id="bagdeCreated" class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                              {% elseif e.Status.description == "Open" %}
+                              <td><span id="bagdeOpen" class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                              {% elseif e.Status.description == "Closed" %}
+                              <td><span id="bagdeClosed" class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                              {% elseif e.Status.description == "Ongoing" %}
+                              <td><span id="bagdeOngoing" class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                              {% elseif e.Status.description == "Ended" %}
+                              <td><span id="bagdeEnded" class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                              {% elseif e.Status.description == "Cancelled" %}
+                              <td><span id="bagdeCancelled" class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                                {% endif %}
+
                           {% if user in e.participants %}
-                              <td>Inscrit</td>
+                              <td>Inscrit.e</td>
                           {% else %}
                               <td></td>
                           {% endif %}
