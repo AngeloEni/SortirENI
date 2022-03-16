@@ -6,12 +6,10 @@ use App\Entity\Campus;
 use App\Entity\Event;
 use App\Entity\Town;
 use App\Entity\Venue;
-use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -21,7 +19,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\LessThan;
 
 class AddEventType extends AbstractType
 {
@@ -32,10 +29,8 @@ class AddEventType extends AbstractType
         $this->em = $em;
     }
 
-
     public function buildForm(FormBuilderInterface $builder, $options): void
     {
-
         $builder
             ->add('name', TextType::class)
             ->add('dateTimeStart', DateTimeType::class, [
@@ -58,7 +53,6 @@ class AddEventType extends AbstractType
                 'choice_label' => 'name',
             ])
             ->add('town', EntityType::class, [
-
                 'class' => Town::class,
                 'choice_label' => 'name',
                 'mapped' => false,
@@ -91,16 +85,12 @@ class AddEventType extends AbstractType
                   'mapped' => false,
                   'required'=>false
               ])*/
-
             ->add('save', SubmitType::class, ['label' => 'Enregistrer'])
             ->add('publish', SubmitType::class, ['label' => 'Publier'])
             ->add('cancel', ResetType::class, ['label' => 'Annuler']);
-
         $formModifierTown = function (FormInterface $form, Town $town = null) {
             $venues = (null === $town) ? [] : $town->getVenues();
-
             // error_log(print_r($postCode, true), 3, 'C:/www.log');
-
             $form->add('venue', EntityType::class, [
                 'class' => Venue::class,
                 'placeholder' => '',
@@ -109,15 +99,11 @@ class AddEventType extends AbstractType
                 'choices' => $venues,
             ]);
         };
-
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifierTown) {
             $form = $event->getForm();
             $data = $event->getData();
             $town = $form['town']->getData();
             $venue = $form['venue']->getData();
-
-
             $form->add('campus', TextType::class, [
                 'data' => $data->getCampus()->getName(),
                 'attr' => array(
@@ -125,11 +111,8 @@ class AddEventType extends AbstractType
                     'disabled' => true,
                 ),
                 'mapped' => false]);
-
-
             if ($data->getVenue()) {
                 $town = $data->getVenue()->getTown();
-
                 $form->add('street', TextType::class, [
                     'data' => $data->getVenue()->getStreet(),
                     'attr' => array(
@@ -138,7 +121,6 @@ class AddEventType extends AbstractType
                     ),
                     'mapped' => false])
                     ->add('town', EntityType::class, [
-
                         'class' => Town::class,
                         'choice_label' => 'name',
                         'data' => $data->getVenue()->getTown(),
@@ -151,19 +133,12 @@ class AddEventType extends AbstractType
                             'disabled' => true,
                         ),
                         'mapped' => false]);
-
             }
-
-
             $formModifierTown($form, $town);
-
         });
-
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($formModifierTown) {
             $form = $event->getForm();
             $data = $event->getData();
-
-
             if (isset($data['town']) && !empty($data['town'])) {
                 $repository = $this->em->getRepository(Town::class);
                 $town = $repository->find($data['town']);
@@ -174,14 +149,10 @@ class AddEventType extends AbstractType
                 $repository = $this->em->getRepository(Venue::class);
                 $venue = $repository->find($data['venue']);
                 $data['street'] = $venue->getStreet();
-
             }
             $event->setData($data);
-
         });
-
     }
-
 
     public function configureOptions(OptionsResolver $resolver): void
     {
