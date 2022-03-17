@@ -151,9 +151,6 @@ class HomeController extends AbstractController
         //$dateTimeNow->setTimezone(new \DateTimeZone('+0100'));
 
 
-
-
-
         $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
         $statusEnded = $statusRepository->findBy(array('description' => "Ended"));
         $statusOngoing = $statusRepository->findBy(array('description' => "Ongoing"));

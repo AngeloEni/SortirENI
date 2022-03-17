@@ -92,6 +92,7 @@ class AddEventType extends AbstractType
         $formModifierTown = function (FormInterface $form, Town $town = null) {
             $venues = (null === $town) ? [] : $town->getVenues();
             // error_log(print_r($postCode, true), 3, 'C:/www.log');
+            $form->remove('venue');
             $form->add('venue', EntityType::class, [
                 'class' => Venue::class,
                 'placeholder' => '',

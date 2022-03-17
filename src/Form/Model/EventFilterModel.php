@@ -16,6 +16,7 @@ class EventFilterModel
     private ?bool $otherEvents =null;
     private ?bool $pastEvents =null;
 
+
     /**
      * @return Campus|null
      */
@@ -159,6 +160,24 @@ class EventFilterModel
     public function setPastEvents(?bool $pastEvents): EventFilterModel
     {
         $this->pastEvents = $pastEvents;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string|null $status
+     * @return EventFilterModel
+     */
+    public function setStatus(?string $status): EventFilterModel
+    {
+        $this->status = $status;
         return $this;
     }
 

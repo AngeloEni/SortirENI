@@ -146,7 +146,7 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted()){
             $event->setStatus($statusCancelled[0]);
-            $event->setEventInfo($event->getEventInfo().'\n   Annulée : '.$form['eventInfo']->getData());
+            $event->setEventInfo($event->getEventInfo(). "\n   Annulée : ".$form['eventInfo']->getData());
             $em->flush();
 
             $this->addFlash('success', 'Sortie annulée !');
