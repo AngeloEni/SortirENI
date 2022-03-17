@@ -148,7 +148,9 @@ class HomeController extends AbstractController
         // Récupérer la table des events et date du jour
         $allEvent = $eventRepository->findAll();
         $dateTimeNow = new \DateTime();
+        $dateTimeNow->setTimezone(new \DateTimeZone('+0100'));
 
+        //dd($dateTimeNow);
 
         $statusArchived = $statusRepository->findBy(array('description' => "Archived"));
         $statusEnded = $statusRepository->findBy(array('description' => "Ended"));
@@ -164,6 +166,7 @@ class HomeController extends AbstractController
             $interval = $dateEvent->diff($dateTimeNow);
             $duration = $event->getDuration();
 
+            //dd($dateEvent->modify('+' . $duration . ' minutes'));
 
             //évenement Closed filtre
             if ($event->getStatus()->getDescription() == "Open" and $dateTimeNow > $dateRegistration) {
@@ -172,7 +175,7 @@ class HomeController extends AbstractController
             }
 
             //évenement Ongoing filtre
-            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent and $dateTimeNow < $dateEvent->modify('+' . $duration . ' minutes')) {
+            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow >= $dateEvent and $dateTimeNow <= $dateEvent->modify('+' . $duration . ' minutes')) {
                 $event->setStatus($statusOngoing[0]);
                 $em->persist($event);
             }
@@ -183,6 +186,14 @@ class HomeController extends AbstractController
                 $event->setStatus($statusEnded[0]);
                 $em->persist($event);
             }
+
+            // méthode seulement en cas de fixture
+
+            if ($event->getStatus()->getDescription() == "Closed" and $dateTimeNow > $dateEvent ) {
+                $event->setStatus($statusEnded[0]);
+                $em->persist($event);
+            }
+
 
             // évenement Archived filtre
             if ($event->getStatus()->getDescription() == "Ended" and $interval->days > 31 and $dateEvent < $dateTimeNow) {
