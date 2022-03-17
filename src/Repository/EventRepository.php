@@ -55,8 +55,6 @@ class EventRepository extends ServiceEntityRepository
 
     public function findByFilters(EventFilterModel $filter, $user): array
     {
-
-
         $qb = $this->createQueryBuilder('e');
 
         if (!is_null($filter->getCampus())) {
@@ -65,7 +63,7 @@ class EventRepository extends ServiceEntityRepository
         }
         if (!empty($filter->getName())) {
             $qb->andWhere('e.name LIKE :name')
-                ->setParameter('name', '%'.$filter->getName().'%');
+                ->setParameter('name', '%' . $filter->getName() . '%');
         }
         if (!is_null($filter->getEarliestDate()) && !is_null($filter->getLatestDate())) {
             $qb->andWhere('e.dateTimeStart BETWEEN :earliestDate AND :latestDate')
@@ -91,21 +89,21 @@ class EventRepository extends ServiceEntityRepository
         }
 
         if (($filter->getMyEvents())) {
-            $qb->andWhere(':user MEMBER OF e.participants' )
-                ->setParameter('user', $user );
+            $qb->andWhere(':user MEMBER OF e.participants')
+                ->setParameter('user', $user);
 
         }
 
         if (($filter->getOtherEvents())) {
             $qb->andWhere(':u NOT MEMBER OF e.participants')
-                ->setParameter('u', $user );
+                ->setParameter('u', $user);
 
         }
 
 
         if (($filter->getPastEvents())) {
             $qb->andWhere('e.status = :status')
-                ->setParameter('status', 5 );
+                ->setParameter('status', 5);
 
         }
 
@@ -113,8 +111,6 @@ class EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
 
     }
-
-
 
 
     /*
