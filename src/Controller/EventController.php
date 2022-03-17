@@ -6,6 +6,7 @@ use App\Entity\Event;
 
 use App\Form\AddEventType;
 use App\Form\CancelEventType;
+use App\Form\EditEventType;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\StatusRepository;
@@ -110,12 +111,21 @@ class EventController extends AbstractController
         // $now = new \DateTime();
         // $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
 
-        $form = $this->createForm(AddEventType::class,$event);
+        $form = $this->createForm(EditEventType::class,$event);
         $form->handleRequest($req);
 
         if ($form->isSubmitted()){
-            $em->flush();
-            return $this->redirectToRoute('home');
+
+            if ($form->get('delete')->isClicked()){
+                $this->deleteEvent($event, $em);
+            } else {
+
+                $em->flush();
+
+                // user feedback si la sortie est ajoutée avec succès (clé / message)
+                $this->addFlash('success', 'Sortie modifiée !');
+                return $this->redirectToRoute('home');
+            }
         }
 
         return $this->render('event/add.html.twig',
@@ -138,6 +148,8 @@ class EventController extends AbstractController
             $event->setStatus($statusCancelled[0]);
             $event->setEventInfo($event->getEventInfo().'\n   Annulée : '.$form['eventInfo']->getData());
             $em->flush();
+
+            $this->addFlash('success', 'Sortie annulée !');
             return $this->redirectToRoute('home');
         }
 
@@ -158,6 +170,22 @@ class EventController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('home');
         }
+
+
+    /**
+     * @Route("/deleteEvent/{id}", name="deleteEvent")
+     */
+    public function deleteEvent(Event $event, EntityManagerInterface $em): Response
+    {
+
+        $em->remove($event);
+        $em->flush();
+
+        // user feedback
+        $this->addFlash('success', 'Sortie supprimée !');
+        return $this->redirectToRoute('home');
+    }
+
 
 
 }
