@@ -2,30 +2,43 @@
   {% block body %}
       <div class="container">
           <div class="row">
-              <div class="col-md-5">
-
-
       <h1>Ta sortie : </h1>
             <div class="col-4 my-4">
                       {{ form_start(addEventForm) }}
-                      {{ form_row(addEventForm.name) }}
+                      {{ form_row(addEventForm.name, {
+                          label: 'Nom'
+                      }) }}
                       {{ form_row(addEventForm.dateTimeStart, {
                           label: 'Date et heure de la sortie'
                       }) }}
                       {{ form_row(addEventForm.registrationClosingDate, {
                           label: "Date limite d'inscription"
                       }) }}
-                      {{ form_row(addEventForm.maxParticipants) }}
-                      {{ form_row(addEventForm.duration) }}
-                      {{ form_row(addEventForm.eventInfo) }}
+                      {{ form_row(addEventForm.maxParticipants, {
+                          label: 'Places'
+                      })  }}
+                      {{ form_row(addEventForm.duration, {
+                          label: 'Durée'
+                      })  }}
+                      {{ form_row(addEventForm.eventInfo, {
+                          label: 'Description'
+                          })  }}
                       {{ form_row(addEventForm.campus) }}
-                      {{ form_row(addEventForm.town) }}
-                      {{ form_row(addEventForm.venue) }}
-                      {{ form_row(addEventForm.street) }}
-                      {{ form_row(addEventForm.postCode) }}
+                      {{ form_row(addEventForm.town, {
+                          label: 'Ville'
+                          })  }}
+                      {{ form_row(addEventForm.venue, {
+                          label: 'Lieu'
+                          })  }}
+                      {{ form_row(addEventForm.street, {
+                          label: 'Rue'
+                          })  }}
+                      {{ form_row(addEventForm.postCode, {
+                          label: 'Code postal'
+                          })  }}
                       {{ form_end(addEventForm) }}
                   </div>
-              </div>
+
               <div class="col-md-7">
                   <img
                           src="{{ asset ('uploads/Logo2.png') }}"
