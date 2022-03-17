@@ -183,7 +183,9 @@ class EventController extends AbstractController
 
         // user feedback
         $this->addFlash('success', 'Sortie supprimée !');
+
         return $this->redirectToRoute('home');
+
     }
 
 

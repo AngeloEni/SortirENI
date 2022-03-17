@@ -98,6 +98,11 @@ background: linear-gradient(0deg, rgba(34,193,195,1) 36%, rgba(244,194,12,1) 91%
 
 </nav>
 
+{% for message in app.flashes('success') %}
+    <div class = "alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
 
 {% block body %}{% endblock %}
 <!-- JS here -->
