@@ -82,15 +82,13 @@ class HomeController extends AbstractController
     public function addEvent(Request $req, EntityManagerInterface $em, StatusRepository $statusRepo): Response
     {
         $now = new \DateTime();
-        $now->setTimezone(new \DateTimeZone('+0100')); //GMT+1
+        $now->setTimezone(new \DateTimeZone('+0100')); //UTC+1
         $user = $this->getParticipantUser();
         $statusCreated = new Status();
         $statusOpen = new Status();
         // $newVenue = new Venue();
 
         $event = new Event(); // je crée une sortie et un lieu
-        //$venues = $venueRepo->findAll();
-        // creation du form avec asso. avec $event
 
         $statusAll = $statusRepo->findAll();
 
@@ -131,6 +129,9 @@ class HomeController extends AbstractController
             if ($isClickedPublish || $isClickedSave) {
                 $em->persist($event);
                 $em->flush();
+
+            // user feedback si la sortie est ajoutée avec succès (clé / message)
+                $this->addFlash('success', 'Sortie créee !');
                 return $this->redirectToRoute('home');
             }
             //si c'est une requête ajax, il n'entrera pas dans le if

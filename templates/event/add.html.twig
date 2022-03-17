@@ -3,8 +3,10 @@
       <div class="container">
           <div class="row">
               <div class="col-md-5">
-                  <h1>Créer une sortie</h1>
-                  <div class="col-4 my-4">
+
+
+      <h1>Ta sortie : </h1>
+            <div class="col-4 my-4">
                       {{ form_start(addEventForm) }}
                       {{ form_row(addEventForm.name) }}
                       {{ form_row(addEventForm.dateTimeStart, {
@@ -30,11 +32,12 @@
                           alt="..."
                           height="450"
                   />
+
               </div>
           </div>
       </div>
-      <script>
-
+    
+    <script>
 
           const init = function () {
 

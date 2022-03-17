@@ -16,8 +16,11 @@ class CancelEventType extends AbstractType
         $builder
             ->add('eventInfo', TextareaType::class, [
                 'label' => "Motif de l'annulation",
-                'mapped' => false,])
-            ->add('cancel', SubmitType::class, ['label' => 'Annuler la sortie']);
+
+                'mapped'=> false,])
+            ->add('cancel', SubmitType::class, ['label' => 'Annuler la sortie'])
+        ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
