@@ -18,61 +18,49 @@
                           </div>
                       </div>
                       <!-- Search Box -->
-                      <div class="row">
-                          <div class="col-xl-12">
-                              <div class="row">
-                                  <div class="col-md-6">
 
-                                  </div>
-                                  <div class="col-md-6">
+                      <div class="" id="form-filter" style="background: rgba(0,0,0,0.2)">
+                          {{ form_start (form) }}
+                          <div class="row">
 
-                                  </div>
-                                  <div class="col-xs-12">
+                              <div class="col-6">
+                                  {{ form_row (form.name) }}
+                                  {{ form_row (form.campus) }}
+                                  {{ form_row (form.myOrganisedEvents) }}
 
-                                  </div>
+                                  {{ form_row (form.myEvents) }}
+
+                                  {{ form_row (form.otherEvents) }}
+
+                                  {{ form_row (form.pastEvents) }}
                               </div>
-                              <!-- form -->
-                              <form id="form-filter" action="#" class="search-box">
-                                  {{ form_start (form) }}
-                                  <div class="input mb-10">
-                                      {{ form_row (form.name) }}
-                                      <div class="form-select form-select-sm mb-3">
-                                          {{ form_row (form.campus) }}
-                                      </div>
-                                  </div>
-                                  <div>
-                                      {{ form_row (form.earliestDate) }}
-                                      {{ form_row (form.latestDate) }}
-                                  </div>
-                                  <div>
-                                      {{ form_row (form.myOrganisedEvents) }}
+                              <div class="col-6">
+                                  {{ form_row (form.earliestDate) }}
+                                  {{ form_row (form.latestDate) }}
 
-                                      {{ form_row (form.myEvents) }}
+                                  <button id="yellow-button" class="btn btn-primary btn-lg mt-5" type="submit">
+                                      GO !!
+                                  </button>
+                              </div>
 
-                                      {{ form_row (form.otherEvents) }}
-
-                                      {{ form_row (form.pastEvents) }}
-                                  </div>
-                                  <div class="search-form mb-30">
-                                      <button id="yellow-button" class="btn btn-primary btn-lg mt-5" type="submit">
-                                          GO !!
-                                      </button>
-                                  </div>
-                                  {{ form_end (form) }}
-                              </form>
-
+                              
                           </div>
+                          {{ form_end (form) }}
                       </div>
+
+
                   </div>
+
               </div>
           </div>
+      </div>
       </div>
       <!-- slider Area End-->
 
 
       <div class="container-fluid">
       <div class="row">
-      <h2 class="mb-5 ml-5">Filtrer les sorties</h2>
+          <h2 class="mb-5 ml-5">Filtrer les sorties</h2>
       </div>
       <div class="container-fluid">
       <div class="row">
@@ -101,19 +89,25 @@
                           <td>{{ e.Participants|length }}/{{ e.maxParticipants }}</td>
                           <td>{{ e.Status.description }}</td>
 
-                              {% if e.Status.description == "Created" %}
-                              <td><span id="bagdeCreated" class="badge badge-secondary">{{ e.Status.description }}</span></td>
-                              {% elseif e.Status.description == "Open" %}
-                              <td><span id="bagdeOpen" class="badge badge-secondary">{{ e.Status.description }}</span></td>
-                              {% elseif e.Status.description == "Closed" %}
-                              <td><span id="bagdeClosed" class="badge badge-secondary">{{ e.Status.description }}</span></td>
-                              {% elseif e.Status.description == "Ongoing" %}
-                              <td><span id="bagdeOngoing" class="badge badge-secondary">{{ e.Status.description }}</span></td>
-                              {% elseif e.Status.description == "Ended" %}
-                              <td><span id="bagdeEnded" class="badge badge-secondary">{{ e.Status.description }}</span></td>
-                              {% elseif e.Status.description == "Cancelled" %}
-                              <td><span id="bagdeCancelled" class="badge badge-secondary">{{ e.Status.description }}</span></td>
-                                {% endif %}
+                          {% if e.Status.description == "Created" %}
+                              <td><span id="bagdeCreated"
+                                        class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                          {% elseif e.Status.description == "Open" %}
+                              <td><span id="bagdeOpen" class="badge badge-secondary">{{ e.Status.description }}</span>
+                              </td>
+                          {% elseif e.Status.description == "Closed" %}
+                              <td><span id="bagdeClosed" class="badge badge-secondary">{{ e.Status.description }}</span>
+                              </td>
+                          {% elseif e.Status.description == "Ongoing" %}
+                              <td><span id="bagdeOngoing"
+                                        class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                          {% elseif e.Status.description == "Ended" %}
+                              <td><span id="bagdeEnded" class="badge badge-secondary">{{ e.Status.description }}</span>
+                              </td>
+                          {% elseif e.Status.description == "Cancelled" %}
+                              <td><span id="bagdeCancelled"
+                                        class="badge badge-secondary">{{ e.Status.description }}</span></td>
+                          {% endif %}
 
                           {% if user in e.participants %}
                               <td>Inscrit.e</td>
@@ -136,9 +130,9 @@
                               </td>
                               {% if user in e.participants and (e.Status.description == "Open" or e.Status.description == "Closed") %}
                                   <td><a class="nav-link" href="{{ path('unregister_for_revent', {id:e.id}) }}">
-                                          <button id="yellow-button" type="button" class="btn active">Se Desister
-                                          </button>
-                                        </a>
+                                  <button id="yellow-button" type="button" class="btn active">Se Desister
+                                  </button>
+                              </a>
                               {% elseif e.Status.description == "Open" and user in e.participants == false and e.getOrganizer() != user %}
                                   <td><a class="nav-link" href="{{ path('register_for_revent', {id:e.id}) }}">
                                           <button id="green-button" type="button" class="btn active">S'Inscrire
@@ -170,10 +164,10 @@
 
                           {% if e.Status.description == "Open" and e.getOrganizer() == user %}
                               <td>
-                              <a class="nav-link" href="{{ path('cancelEvent', {id:e.id}) }}">
-                                  <button id="red-button" type="button" class="btn active">Annuler
-                                  </button>
-                              </a>
+                                  <a class="nav-link" href="{{ path('cancelEvent', {id:e.id}) }}">
+                                      <button id="red-button" type="button" class="btn active">Annuler
+                                      </button>
+                                  </a>
                               </td>
                           {% else %}
                               <td></td>

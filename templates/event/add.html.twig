@@ -4,102 +4,84 @@
           <div class="row">
               <div class="col-md-5">
 
-      <h1>Ta sortie : </h1>
-      <div class="col-4 my-4" >
-          {{ form_start(addEventForm) }}
-          {{ form_row(addEventForm.name,{
-              label: 'Nom de la sortie'
-          })  }}
-          {{ form_row(addEventForm.dateTimeStart, {
-              label: 'Date et heure de la sortie'
-          }) }}
-          {{ form_row(addEventForm.registrationClosingDate, {
-              label: "Date limite d'inscription"
-          }) }}
-          {{ form_row(addEventForm.maxParticipants,{
-              label: 'Nombre de places'
-          })  }}
-          {{ form_row(addEventForm.duration,{
-              label: 'Durée'
-          })  }}
-          {{ form_row(addEventForm.eventInfo,{
-              label: 'Description et infos'
-          })  }}
-          {{ form_row(addEventForm.campus) }}
-          {{ form_row(addEventForm.town,{
-              label: 'Ville'
-          })  }}
-          {{ form_row(addEventForm.venue,{
-              label: 'Lieu'
-          })  }}
-          {{ form_row(addEventForm.street,{
-              label: 'Street'
-          })  }}
-          {{ form_row(addEventForm.postCode,{
-              label: 'Code postal'
-          })  }}
 
-          {{ form_end(addEventForm) }}
-      </div>
-{#              </div>#}
-{#              <div class="col-md-7">#}
-{#                  <img#}
-{#                          src="{{ asset ('uploads/Logo2.png')}}"#}
-{#                          alt="..."#}
-{#                          height="450"#}
-{#                  />#}
+      <h1>Ta sortie : </h1>
+            <div class="col-4 my-4">
+                      {{ form_start(addEventForm) }}
+                      {{ form_row(addEventForm.name) }}
+                      {{ form_row(addEventForm.dateTimeStart, {
+                          label: 'Date et heure de la sortie'
+                      }) }}
+                      {{ form_row(addEventForm.registrationClosingDate, {
+                          label: "Date limite d'inscription"
+                      }) }}
+                      {{ form_row(addEventForm.maxParticipants) }}
+                      {{ form_row(addEventForm.duration) }}
+                      {{ form_row(addEventForm.eventInfo) }}
+                      {{ form_row(addEventForm.campus) }}
+                      {{ form_row(addEventForm.town) }}
+                      {{ form_row(addEventForm.venue) }}
+                      {{ form_row(addEventForm.street) }}
+                      {{ form_row(addEventForm.postCode) }}
+                      {{ form_end(addEventForm) }}
+                  </div>
+              </div>
+              <div class="col-md-7">
+                  <img
+                          src="{{ asset ('uploads/Logo2.png') }}"
+                          alt="..."
+                          height="450"
+                  />
 
               </div>
           </div>
       </div>
-      <script>
-          //je récupère l'élément town par son id html en utilisant JQuery
-          let $town = $('#add_event_town');
-          $town.on('change', function () {
-              //je récupère le form le plus proche !
-              let $form = $(this).closest('form');
-              // je crée un objet js vide (pour envoyer un json)
-              let data = {};
-              //je sérealise les données du form les envoyer au back
-              data = $form.serialize();
+    
+    <script>
 
-              //et maintenant la requête Ajax:
-              $.ajax({
-                  // TODO : ajouter la route d'une méthode getVenues ici (+creer un Controller Lieu)
-                  url: $form.attr('action'),
-                  type: $form.attr('method'),
-                  data: data,
-                  //ici la function que je vais exécuter une fois que j'ai reçu les données du back
+          const init = function () {
 
-                  //TODO - renvoyer la liste de lieux plutôt que la page entière
-                  complete: function (htmlResponse) {
-                      $('#add_event_venue').replaceWith(
-                          // ... with the returned one from the AJAX response.
-                          $(htmlResponse.responseText).find('#add_event_venue')
-                      );
-                      $('#add_event_postCode').replaceWith(
-                          // ... with the returned one from the AJAX response.
-                          $(htmlResponse.responseText).find('#add_event_postCode')
-                      );
-                      addChangeVenueListener();
-                  }
+              //je récupère l'élément town par son id html en utilisant JQuery
+              let town = $('#add_event_town');
 
-              })
-
-          });
+              town.on('change', function () {
+                 
+                  //je récupère le form le plus proche !
+                  let $form = $(this).closest('form');
+                  // je crée un objet js vide (pour envoyer un json)
+                  let data = {};
+                  //je sérealise les données du form les envoyer au back
+                  data = $form.serialize();
+                  //et maintenant la requête Ajax:
+                  $.ajax({
+                      url: $form.attr('action'),
+                      type: $form.attr('method'),
+                      data: data,
+                      //ici la function que je vais exécuter une fois que j'ai reçu les données du back
+                      complete: function (htmlResponse) {
+                          $('#add_event_venue').replaceWith(
+                              // ... with the returned one from the AJAX response.
+                              $(htmlResponse.responseText).find('#add_event_venue')
+                          );
+                          $('#add_event_postCode').replaceWith(
+                              // ... with the returned one from the AJAX response.
+                              $(htmlResponse.responseText).find('#add_event_postCode')
+                          );
+                          addChangeVenueListener();
+                      }
+                  })
+              });
+          }
 
           function addChangeVenueListener() {
               let $venue = $('#add_event_venue');
               $venue.on('change', function () {
-                  console.log('Annest');
                   //je récupère le form le plus proche !
                   let $form = $(this).closest('form');
                   // je crée un objet js vide (pour envoyer un json)
                   let data = {};
                   //je sérealise les données du form en excluant 'town' pour les envoyer au back
                   data = $("textarea, input,select[name!='add_event[town]']", $form).serialize();
-
-
                   $.ajax({
                           url: $form.attr('action'),
                           type: $form.attr('method'),
@@ -116,5 +98,6 @@
               });
           }
 
+          window.onload = init;
       </script>
   {% endblock %}

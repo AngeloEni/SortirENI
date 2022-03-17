@@ -99,7 +99,7 @@ class AppFixtures extends Fixture
 
     public function generateTown(){
 
-        for ($i = 0; $i < 100; $i++){
+        for ($i = 0; $i < 10; $i++){
 
 
             $town = new Town();

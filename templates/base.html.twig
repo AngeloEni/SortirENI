@@ -25,7 +25,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
@@ -39,110 +38,110 @@
 
     {% endblock %}
 </head>
-    <body>
+<body>
 
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div id="spinner-img" class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="preloader-circle"></div>
-                <div class="preloader-img pere-text">
-                    <img  id="spinner-img" src={{ asset('img/5845e13e7733c3558233c0ec.png')}} alt="">
-                </div>
+<!-- Preloader Start -->
+<div id="preloader-active">
+    <div id="spinner-img" class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="preloader-circle"></div>
+            <div class="preloader-img pere-text">
+                <img id="spinner-img" src={{ asset('img/5845e13e7733c3558233c0ec.png') }} alt="">
             </div>
         </div>
     </div>
+</div>
 
 
-    <nav class="navbar  header-bottom header-sticky navbar-expand-lg navbar-dark bg-dark static-top" style="background: rgb(2,0,36);
-background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,13,128,0.9668242296918768) 0%, rgba(0,212,255,1) 100%);">
-        <div class="container">
+<nav class="navbar  header-bottom header-sticky navbar-expand-lg navbar-dark bg-dark static-top" style="background: rgb(34,193,195);
+background: linear-gradient(0deg, rgba(34,193,195,1) 36%, rgba(244,194,12,1) 91%, rgba(244,155,12,1) 100%);
+">
+    <div class="container">
 
 
-            <a class="navbar-brand" href="#">
-                <img
-                        src="{{ asset ('img/5845e13e7733c3558233c0ec.png')}}"
-                        alt="..."
-                        height="66"
-                />
-            </a>
-            <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-            >
-                <!--Villes CAmpus Acceuil Mon profil Se déconnecter-->
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ path('home')}}">Acceuil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_participant')}}">Mon profil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout')}}">Se déconnecter</a>
-                    </li>
-
-                </ul>
+        <a class="navbar-brand" href="#">
+            <img
+                    src="{{ asset ('img/5845e13e7733c3558233c0ec.png') }}"
+                    alt="..."
+                    height="66"
+            />
+        </a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <!--Villes CAmpus Acceuil Mon profil Se déconnecter-->
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ path('home') }}">Acceuil</a>
                 </li>
-                </ul>
-            </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_participant') }}">Mon profil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+                </li>
+
+            </ul>
+            </li>
+            </ul>
         </div>
+    </div>
 
-    </nav>
-
-
-    {% block body %}{% endblock %}
-    <!-- JS here -->
-
-    <!-- All JS Custom Plugins Link Here here -->
-    <script src={{ asset("js/vendor/modernizr-3.5.0.min.js") }}></script>
-
-    <!-- Jquery, Popper, Bootstrap -->
-
-    <script src={{ asset("js/vendor/jquery-1.12.4.min.js") }}></script>
-    <script src={{ asset("js/popper.min.js") }}></script>
-    <script src={{ asset("js/bootstrap.min.js" ) }}></script>
-    <!-- Jquery Mobile Menu -->
-    <script src={{ asset("js/jquery.slicknav.min.js") }}></script>
-
-    <!-- Jquery Slick , Owl-Carousel Plugins -->
-
-    <script src={{ asset("js/owl.carousel.min.js") }}></script>
-    <script src={{ asset("js/slick.min.js") }}></script>
+</nav>
 
 
+{% block body %}{% endblock %}
+<!-- JS here -->
 
-    <!-- One Page, Animated-HeadLin -->
+<!-- All JS Custom Plugins Link Here here -->
+<script src={{ asset("js/vendor/modernizr-3.5.0.min.js") }}></script>
 
-    <script src={{ asset("js/wow.min.js") }}></script>
-    <script src={{ asset("js/animated.headline.js") }}></script>
-    <script src={{ asset("js/jquery.magnific-popup.js") }}></script>
+<!-- Jquery, Popper, Bootstrap -->
+
+<script src={{ asset("js/vendor/jquery-1.12.4.min.js") }}></script>
+<script src={{ asset("js/popper.min.js") }}></script>
+<script src={{ asset("js/bootstrap.min.js" ) }}></script>
+<!-- Jquery Mobile Menu -->
+<script src={{ asset("js/jquery.slicknav.min.js") }}></script>
+
+<!-- Jquery Slick , Owl-Carousel Plugins -->
+
+<script src={{ asset("js/owl.carousel.min.js") }}></script>
+<script src={{ asset("js/slick.min.js") }}></script>
 
 
+<!-- One Page, Animated-HeadLin -->
 
-    <script src={{ asset("js/jquery.scrollUp.min.js") }}></script>
-    <script src={{ asset("js/jquery.nice-select.min.js") }}></script>
-    <script src={{ asset("js/jquery.sticky.js") }}></script>
+<script src={{ asset("js/wow.min.js") }}></script>
+<script src={{ asset("js/animated.headline.js") }}></script>
+<script src={{ asset("js/jquery.magnific-popup.js") }}></script>
 
-    <!-- contact js -->
 
-    <script src={{ asset('js/contact.js') }}></script>
-    <script src={{ asset('js/jquery.form.js') }}></script>
-    <script src={{ asset('js/jquery.validate.min.js') }}></script>
-    <script src={{ asset('js/mail-script.js') }}></script>
-    <script src={{ asset('js/jquery.ajaxchimp.min.js') }}></script>
+<script src={{ asset("js/jquery.scrollUp.min.js") }}></script>
+<script src={{ asset("js/jquery.nice-select.min.js") }}></script>
+<script src={{ asset("js/jquery.sticky.js") }}></script>
 
-    <!-- Jquery Plugins, main Jquery -->
+<!-- contact js -->
 
-    <script src={{ asset('js/plugins.js') }}></script>
-    <script src={{ asset('js/main.js') }}></script>
-    </body>
+<script src={{ asset('js/contact.js') }}></script>
+<script src={{ asset('js/jquery.form.js') }}></script>
+<script src={{ asset('js/jquery.validate.min.js') }}></script>
+<script src={{ asset('js/mail-script.js') }}></script>
+<script src={{ asset('js/jquery.ajaxchimp.min.js') }}></script>
+
+<!-- Jquery Plugins, main Jquery -->
+
+<script src={{ asset('js/plugins.js') }}></script>
+<script src={{ asset('js/main.js') }}></script>
+
+</body>
 </html>
